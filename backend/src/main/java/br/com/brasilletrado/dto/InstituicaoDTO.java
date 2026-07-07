@@ -2,27 +2,27 @@ package br.com.brasilletrado.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class EducadorDTO {
+public class InstituicaoDTO {
 
     private Long id;
 
     @NotBlank(message = "O nome é obrigatório")
     private String nome;
 
+    @NotBlank(message = "O e-mail é obrigatório")
     private String email;
-    private String telefone;
-    private String formacao;
-    private String fotoUrl;
 
-    public EducadorDTO() {}
+    private String senha;
+    private String cnpj;
 
-    public EducadorDTO(Long id, String nome, String email, String telefone, String formacao, String fotoUrl) {
+    public InstituicaoDTO() {}
+
+    public InstituicaoDTO(Long id, String nome, String email, String senha, String cnpj) {
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.telefone = telefone;
-        this.formacao = formacao;
-        this.fotoUrl = fotoUrl;
+        this.senha = senha;
+        this.cnpj = cnpj;
     }
 
     public Long getId() {
@@ -49,28 +49,20 @@ public class EducadorDTO {
         this.email = email;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
-    public String getFormacao() {
-        return formacao;
+    public String getCnpj() {
+        return cnpj;
     }
 
-    public void setFormacao(String formacao) {
-        this.formacao = formacao;
-    }
-
-    public String getFotoUrl() {
-        return fotoUrl;
-    }
-
-    public void setFotoUrl(String fotoUrl) {
-        this.fotoUrl = fotoUrl;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public static Builder builder() {
@@ -81,9 +73,8 @@ public class EducadorDTO {
         private Long id;
         private String nome;
         private String email;
-        private String telefone;
-        private String formacao;
-        private String fotoUrl;
+        private String senha;
+        private String cnpj;
 
         public Builder id(Long id) {
             this.id = id;
@@ -100,23 +91,18 @@ public class EducadorDTO {
             return this;
         }
 
-        public Builder telefone(String telefone) {
-            this.telefone = telefone;
+        public Builder senha(String senha) {
+            this.senha = senha;
             return this;
         }
 
-        public Builder formacao(String formacao) {
-            this.formacao = formacao;
+        public Builder cnpj(String cnpj) {
+            this.cnpj = cnpj;
             return this;
         }
 
-        public Builder fotoUrl(String fotoUrl) {
-            this.fotoUrl = fotoUrl;
-            return this;
-        }
-
-        public EducadorDTO build() {
-            return new EducadorDTO(id, nome, email, telefone, formacao, fotoUrl);
+        public InstituicaoDTO build() {
+            return new InstituicaoDTO(id, nome, email, senha, cnpj);
         }
     }
 }

@@ -17,6 +17,7 @@ public class EducadorMapper {
                 .email(educador.getEmail())
                 .telefone(educador.getTelefone())
                 .formacao(educador.getFormacao())
+                .fotoUrl(educador.getFotoUrl())
                 .build();
     }
 
@@ -30,6 +31,7 @@ public class EducadorMapper {
                 .email(dto.getEmail())
                 .telefone(dto.getTelefone())
                 .formacao(dto.getFormacao())
+                .fotoUrl(dto.getFotoUrl())
                 .build();
     }
 }

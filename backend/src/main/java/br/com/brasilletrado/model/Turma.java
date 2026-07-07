@@ -31,15 +31,20 @@ public class Turma {
     @JoinColumn(name = "educador_id")
     private Educador educador;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instituicao_id")
+    private Instituicao instituicao;
+
     public Turma() {}
 
-    public Turma(Long id, String nome, Turno turno, String diasSemana, Integer capacidadeMaxima, Educador educador) {
+    public Turma(Long id, String nome, Turno turno, String diasSemana, Integer capacidadeMaxima, Educador educador, Instituicao instituicao) {
         this.id = id;
         this.nome = nome;
         this.turno = turno;
         this.diasSemana = diasSemana;
         this.capacidadeMaxima = capacidadeMaxima;
         this.educador = educador;
+        this.instituicao = instituicao;
     }
 
     public Long getId() {
@@ -90,6 +95,14 @@ public class Turma {
         this.educador = educador;
     }
 
+    public Instituicao getInstituicao() {
+        return instituicao;
+    }
+
+    public void setInstituicao(Instituicao instituicao) {
+        this.instituicao = instituicao;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -101,6 +114,7 @@ public class Turma {
         private String diasSemana;
         private Integer capacidadeMaxima;
         private Educador educador;
+        private Instituicao instituicao;
 
         public Builder id(Long id) {
             this.id = id;
@@ -132,8 +146,13 @@ public class Turma {
             return this;
         }
 
+        public Builder instituicao(Instituicao instituicao) {
+            this.instituicao = instituicao;
+            return this;
+        }
+
         public Turma build() {
-            return new Turma(id, nome, turno, diasSemana, capacidadeMaxima, educador);
+            return new Turma(id, nome, turno, diasSemana, capacidadeMaxima, educador, instituicao);
         }
     }
 }

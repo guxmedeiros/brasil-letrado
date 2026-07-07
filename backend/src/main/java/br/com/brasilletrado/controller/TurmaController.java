@@ -3,6 +3,7 @@ package br.com.brasilletrado.controller;
 import br.com.brasilletrado.dto.TurmaDTO;
 import br.com.brasilletrado.mapper.TurmaMapper;
 import br.com.brasilletrado.model.Educador;
+import br.com.brasilletrado.model.Instituicao;
 import br.com.brasilletrado.model.Turma;
 import br.com.brasilletrado.repository.AlunoRepository;
 import br.com.brasilletrado.repository.EducadorRepository;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +45,9 @@ public class TurmaController {
     private TurmaMapper turmaMapper;
 
     @GetMapping
-    @Operation(summary = "Listar todas as turmas")
-    public List<TurmaDTO> listar() {
-        return turmaRepository.findAll().stream()
+    @Operation(summary = "Listar todas as turmas da instituição")
+    public List<TurmaDTO> listar(@AuthenticationPrincipal Instituicao inst) {
+        return turmaRepository.findAllByInstituicaoId(inst.getId()).stream()
                 .map(turma -> {
                     long qtd = alunoRepository.countByTurmaId(turma.getId());
                     return turmaMapper.toDTO(turma, qtd);
@@ -54,37 +56,38 @@ public class TurmaController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar turma por ID")
-    public ResponseEntity<TurmaDTO> buscarPorId(@PathVariable Long id) {
-        Turma turma = turmaRepository.findById(id)
+    @Operation(summary = "Buscar turma por ID na instituição")
+    public ResponseEntity<TurmaDTO> buscarPorId(@PathVariable Long id, @AuthenticationPrincipal Instituicao inst) {
+        Turma turma = turmaRepository.findByIdAndInstituicaoId(id, inst.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com o ID: " + id));
         long qtd = alunoRepository.countByTurmaId(turma.getId());
         return ResponseEntity.ok(turmaMapper.toDTO(turma, qtd));
     }
 
     @PostMapping
-    @Operation(summary = "Cadastrar uma nova turma")
-    public ResponseEntity<TurmaDTO> cadastrar(@Valid @RequestBody TurmaDTO dto) {
+    @Operation(summary = "Cadastrar uma nova turma para a instituição")
+    public ResponseEntity<TurmaDTO> cadastrar(@Valid @RequestBody TurmaDTO dto, @AuthenticationPrincipal Instituicao inst) {
         Educador educador = null;
         if (dto.getEducadorId() != null) {
-            educador = educadorRepository.findById(dto.getEducadorId())
+            educador = educadorRepository.findByIdAndInstituicaoId(dto.getEducadorId(), inst.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Educador não encontrado com o ID: " + dto.getEducadorId()));
         }
 
         Turma turma = turmaMapper.toEntity(dto, educador);
+        turma.setInstituicao(inst);
         Turma salva = turmaRepository.save(turma);
         return ResponseEntity.status(HttpStatus.CREATED).body(turmaMapper.toDTO(salva, 0));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar dados de uma turma")
-    public ResponseEntity<TurmaDTO> atualizar(@PathVariable Long id, @Valid @RequestBody TurmaDTO dto) {
-        Turma turma = turmaRepository.findById(id)
+    @Operation(summary = "Atualizar dados de uma turma da instituição")
+    public ResponseEntity<TurmaDTO> atualizar(@PathVariable Long id, @Valid @RequestBody TurmaDTO dto, @AuthenticationPrincipal Instituicao inst) {
+        Turma turma = turmaRepository.findByIdAndInstituicaoId(id, inst.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com o ID: " + id));
 
         Educador educador = null;
         if (dto.getEducadorId() != null) {
-            educador = educadorRepository.findById(dto.getEducadorId())
+            educador = educadorRepository.findByIdAndInstituicaoId(dto.getEducadorId(), inst.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Educador não encontrado com o ID: " + dto.getEducadorId()));
         }
 
@@ -100,9 +103,9 @@ public class TurmaController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Excluir uma turma")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        Turma turma = turmaRepository.findById(id)
+    @Operation(summary = "Excluir uma turma da instituição")
+    public ResponseEntity<Void> excluir(@PathVariable Long id, @AuthenticationPrincipal Instituicao inst) {
+        Turma turma = turmaRepository.findByIdAndInstituicaoId(id, inst.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com o ID: " + id));
 
         if (alunoRepository.countByTurmaId(id) > 0) {

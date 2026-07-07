@@ -1,12 +1,23 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.svg';
 
-export default function Navbar({ darkMode, onToggleDark }) {
+export default function Navbar() {
+  const { isAuthenticated, instituicao, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  if (!isAuthenticated) return null;
+
   return (
     <nav className="navbar">
       <NavLink to="/" className="navbar-brand">
-        <img src={logo} alt="Logo" className="brand-icon" style={{ height: '42px', width: '42px' }} />
+        <img src={logo} alt="Logo Brasil Letrado" className="brand-icon" />
         <span>
           Brasil Letrado
           <span className="brand-sub">Alfabetização de Adultos</span>
@@ -40,28 +51,20 @@ export default function Navbar({ darkMode, onToggleDark }) {
       </div>
 
       <div className="navbar-actions">
+        {instituicao?.nome && (
+          <div className="navbar-inst">
+            <i className="pi pi-building" />
+            <span>{instituicao.nome}</span>
+          </div>
+        )}
         <button
-          id="dark-mode-toggle"
-          className="p-button p-button-text p-button-rounded"
-          onClick={onToggleDark}
-          title={darkMode ? 'Modo Claro' : 'Modo Escuro'}
-          style={{
-            background: 'rgba(255,255,255,0.15)',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '0.5rem',
-            cursor: 'pointer',
-            color: 'white',
-            fontSize: '1.1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '36px',
-            height: '36px',
-            transition: 'background 0.2s'
-          }}
+          id="logout-btn"
+          className="btn-logout"
+          onClick={handleLogout}
+          title="Sair da conta"
         >
-          <i className={`pi ${darkMode ? 'pi-sun' : 'pi-moon'}`} />
+          <i className="pi pi-sign-out" />
+          Sair
         </button>
       </div>
     </nav>

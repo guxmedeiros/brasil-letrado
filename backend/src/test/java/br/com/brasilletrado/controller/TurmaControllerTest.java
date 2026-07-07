@@ -2,11 +2,14 @@ package br.com.brasilletrado.controller;
 
 import br.com.brasilletrado.dto.TurmaDTO;
 import br.com.brasilletrado.model.Educador;
+import br.com.brasilletrado.model.Instituicao;
 import br.com.brasilletrado.model.Turma;
 import br.com.brasilletrado.model.Turno;
 import br.com.brasilletrado.repository.EducadorRepository;
 import br.com.brasilletrado.repository.TurmaRepository;
 import br.com.brasilletrado.repository.AlunoRepository;
+import br.com.brasilletrado.repository.InstituicaoRepository;
+import br.com.brasilletrado.security.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,17 +43,39 @@ public class TurmaControllerTest {
     private AlunoRepository alunoRepository;
 
     @Autowired
+    private InstituicaoRepository instituicaoRepository;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private Educador educadorSalvo;
+    private Instituicao inst;
+    private String token;
 
     @BeforeEach
     public void setup() {
         alunoRepository.deleteAll();
         turmaRepository.deleteAll();
         educadorRepository.deleteAll();
+        instituicaoRepository.deleteAll();
 
-        Educador e = Educador.builder().nome("Paulo Freire").build();
+        inst = Instituicao.builder()
+                .nome("Test Inst")
+                .email("test@test.com")
+                .senha(passwordEncoder.encode("password"))
+                .cnpj("12.345.678/0001-90")
+                .build();
+        instituicaoRepository.save(inst);
+
+        token = "Bearer " + jwtService.generateToken(inst);
+
+        Educador e = Educador.builder().nome("Paulo Freire").instituicao(inst).build();
         educadorSalvo = educadorRepository.save(e);
     }
 
@@ -64,6 +90,7 @@ public class TurmaControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/turmas")
+                .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -79,6 +106,7 @@ public class TurmaControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/turmas")
+                .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
@@ -88,10 +116,11 @@ public class TurmaControllerTest {
 
     @Test
     public void deveListarTurmas() throws Exception {
-        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).build();
+        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).instituicao(inst).build();
         turmaRepository.save(t);
 
-        mockMvc.perform(get("/api/turmas"))
+        mockMvc.perform(get("/api/turmas")
+                .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].nome", is("Turma B")));
@@ -99,17 +128,18 @@ public class TurmaControllerTest {
 
     @Test
     public void deveBuscarTurmaPorId() throws Exception {
-        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).build();
+        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).instituicao(inst).build();
         Turma salva = turmaRepository.save(t);
 
-        mockMvc.perform(get("/api/turmas/" + salva.getId()))
+        mockMvc.perform(get("/api/turmas/" + salva.getId())
+                .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome", is("Turma B")));
     }
 
     @Test
     public void deveAtualizarTurma() throws Exception {
-        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).build();
+        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).instituicao(inst).build();
         Turma salva = turmaRepository.save(t);
 
         TurmaDTO updateDto = TurmaDTO.builder()
@@ -119,6 +149,7 @@ public class TurmaControllerTest {
                 .build();
 
         mockMvc.perform(put("/api/turmas/" + salva.getId())
+                .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isOk())
@@ -128,13 +159,15 @@ public class TurmaControllerTest {
 
     @Test
     public void deveExcluirTurma() throws Exception {
-        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).build();
+        Turma t = Turma.builder().nome("Turma B").turno(Turno.TARDE).educador(educadorSalvo).instituicao(inst).build();
         Turma salva = turmaRepository.save(t);
 
-        mockMvc.perform(delete("/api/turmas/" + salva.getId()))
+        mockMvc.perform(delete("/api/turmas/" + salva.getId())
+                .header("Authorization", token))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/turmas/" + salva.getId()))
+        mockMvc.perform(get("/api/turmas/" + salva.getId())
+                .header("Authorization", token))
                 .andExpect(status().isNotFound());
     }
 }

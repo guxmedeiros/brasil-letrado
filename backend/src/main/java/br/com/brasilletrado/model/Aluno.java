@@ -31,15 +31,20 @@ public class Aluno {
     @JoinColumn(name = "turma_id")
     private Turma turma;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instituicao_id")
+    private Instituicao instituicao;
+
     public Aluno() {}
 
-    public Aluno(Long id, String nome, LocalDate dataNascimento, String telefone, NivelAlfabetizacao nivelAlfabetizacao, Turma turma) {
+    public Aluno(Long id, String nome, LocalDate dataNascimento, String telefone, NivelAlfabetizacao nivelAlfabetizacao, Turma turma, Instituicao instituicao) {
         this.id = id;
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.telefone = telefone;
         this.nivelAlfabetizacao = nivelAlfabetizacao;
         this.turma = turma;
+        this.instituicao = instituicao;
     }
 
     public Long getId() {
@@ -90,6 +95,14 @@ public class Aluno {
         this.turma = turma;
     }
 
+    public Instituicao getInstituicao() {
+        return instituicao;
+    }
+
+    public void setInstituicao(Instituicao instituicao) {
+        this.instituicao = instituicao;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -101,6 +114,7 @@ public class Aluno {
         private String telefone;
         private NivelAlfabetizacao nivelAlfabetizacao;
         private Turma turma;
+        private Instituicao instituicao;
 
         public Builder id(Long id) {
             this.id = id;
@@ -132,8 +146,13 @@ public class Aluno {
             return this;
         }
 
+        public Builder instituicao(Instituicao instituicao) {
+            this.instituicao = instituicao;
+            return this;
+        }
+
         public Aluno build() {
-            return new Aluno(id, nome, dataNascimento, telefone, nivelAlfabetizacao, turma);
+            return new Aluno(id, nome, dataNascimento, telefone, nivelAlfabetizacao, turma, instituicao);
         }
     }
 }
