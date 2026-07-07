@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -8,17 +9,42 @@ import logo from '../assets/logo.svg';
 
 const EMPTY_FORM = { nome: '', cnpj: '', email: '', senha: '', confirmarSenha: '' };
 
+// Componente Field definido FORA para evitar recriação
+const Field = ({ id, label, value, onChange, type = 'text', placeholder, error }) => (
+  <div className="field">
+    <label htmlFor={id}>{label}</label>
+    <InputText
+      id={id}
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={error ? 'p-invalid' : ''}
+    />
+    {error && <small className="p-error">{error}</small>}
+  </div>
+);
+
 export default function RegisterPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const onChange = (field, value) => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/educadores');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleInputChange = (field) => (e) => {
+    const value = e.target.value;
     setForm(prev => ({ ...prev, [field]: value }));
-    if (fieldErrors[field]) setFieldErrors(prev => ({ ...prev, [field]: null }));
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: null }));
+    }
     if (error) setError('');
   };
 
@@ -35,7 +61,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validar();
-    if (Object.keys(errs).length > 0) { setFieldErrors(errs); return; }
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
+      return;
+    }
 
     setLoading(true);
     setError('');
@@ -51,21 +80,6 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
-
-  const Field = ({ id, label, field, type = 'text', placeholder }) => (
-    <div className="field">
-      <label htmlFor={id}>{label}</label>
-      <InputText
-        id={id}
-        type={type}
-        value={form[field]}
-        onChange={e => onChange(field, e.target.value)}
-        placeholder={placeholder}
-        className={fieldErrors[field] ? 'p-invalid' : ''}
-      />
-      {fieldErrors[field] && <small className="p-error">{fieldErrors[field]}</small>}
-    </div>
-  );
 
   return (
     <div className="auth-page">
@@ -86,11 +100,49 @@ export default function RegisterPage() {
         )}
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
-          <Field id="reg-nome" label="Nome da instituição *" field="nome" placeholder="ONG Sementes do Saber" />
-          <Field id="reg-cnpj" label="CNPJ (opcional)" field="cnpj" placeholder="00.000.000/0001-00" />
-          <Field id="reg-email" label="E-mail *" field="email" type="email" placeholder="contato@instituicao.org" />
-          <Field id="reg-senha" label="Senha *" field="senha" type="password" placeholder="Mínimo 6 caracteres" />
-          <Field id="reg-confirmar" label="Confirmar senha *" field="confirmarSenha" type="password" placeholder="Repita a senha" />
+          <Field
+            id="reg-nome"
+            label="Nome da instituição *"
+            value={form.nome}
+            onChange={handleInputChange('nome')}
+            placeholder="ONG Sementes do Saber"
+            error={fieldErrors.nome}
+          />
+          <Field
+            id="reg-cnpj"
+            label="CNPJ (opcional)"
+            value={form.cnpj}
+            onChange={handleInputChange('cnpj')}
+            placeholder="00.000.000/0001-00"
+            error={fieldErrors.cnpj}
+          />
+          <Field
+            id="reg-email"
+            label="E-mail *"
+            type="email"
+            value={form.email}
+            onChange={handleInputChange('email')}
+            placeholder="contato@instituicao.org"
+            error={fieldErrors.email}
+          />
+          <Field
+            id="reg-senha"
+            label="Senha *"
+            type="password"
+            value={form.senha}
+            onChange={handleInputChange('senha')}
+            placeholder="Mínimo 6 caracteres"
+            error={fieldErrors.senha}
+          />
+          <Field
+            id="reg-confirmar"
+            label="Confirmar senha *"
+            type="password"
+            value={form.confirmarSenha}
+            onChange={handleInputChange('confirmarSenha')}
+            placeholder="Repita a senha"
+            error={fieldErrors.confirmarSenha}
+          />
 
           <button
             id="register-submit-btn"
@@ -114,3 +166,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

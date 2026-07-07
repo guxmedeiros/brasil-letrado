@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
@@ -6,15 +7,24 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.svg';
 
+const EMPTY_FORM = { email: '', senha: '' };
+
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', senha: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const toast = useRef(null);
 
-  const onChange = (field, value) => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/educadores');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleInputChange = (field) => (e) => {
+    const value = e.target.value;
     setForm(prev => ({ ...prev, [field]: value }));
     if (error) setError('');
   };
@@ -64,7 +74,7 @@ export default function LoginPage() {
               id="login-email"
               type="email"
               value={form.email}
-              onChange={e => onChange('email', e.target.value)}
+              onChange={handleInputChange('email')}
               placeholder="contato@instituicao.org"
               autoComplete="email"
               autoFocus
@@ -76,7 +86,7 @@ export default function LoginPage() {
               id="login-senha"
               type="password"
               value={form.senha}
-              onChange={e => onChange('senha', e.target.value)}
+              onChange={handleInputChange('senha')}
               placeholder="••••••••"
               autoComplete="current-password"
             />
@@ -105,3 +115,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

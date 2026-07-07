@@ -9,14 +9,44 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated) {
+    return (
+      <nav className="navbar">
+        <NavLink to="/" className="navbar-brand">
+          <img src={logo} alt="Logo Brasil Letrado" className="brand-icon" />
+          <span>
+            Brasil Letrado
+            <span className="brand-sub">Alfabetização de Adultos</span>
+          </span>
+        </NavLink>
+
+        <div className="navbar-actions">
+          <NavLink to="/login" className="btn-logout" style={{ textDecoration: 'none' }}>
+            Entrar
+          </NavLink>
+          <NavLink to="/cadastro" className="btn-primary" style={{
+            background: 'var(--amber)',
+            color: 'var(--navy)',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '0.4rem 0.85rem',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            textDecoration: 'none'
+          }}>
+            Cadastrar
+          </NavLink>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="navbar">
-      <NavLink to="/" className="navbar-brand">
+      <NavLink to="/dashboard" className="navbar-brand">
         <img src={logo} alt="Logo Brasil Letrado" className="brand-icon" />
         <span>
           Brasil Letrado
@@ -25,6 +55,13 @@ export default function Navbar() {
       </NavLink>
 
       <div className="navbar-links">
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+        >
+          <i className="pi pi-home" />
+          Dashboard
+        </NavLink>
         <NavLink
           to="/educadores"
           className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
