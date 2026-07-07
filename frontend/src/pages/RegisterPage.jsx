@@ -35,7 +35,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/educadores');
+      navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -72,7 +72,7 @@ export default function RegisterPage() {
       await authService.register({ nome: form.nome, cnpj: form.cnpj, email: form.email, senha: form.senha });
       // Auto-login após cadastro
       await login(form.email, form.senha);
-      navigate('/educadores');
+      navigate('/');
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.error || 'Erro ao cadastrar. Tente novamente.';
       setError(msg);

@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/educadores');
+      navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -39,7 +39,7 @@ export default function LoginPage() {
     setError('');
     try {
       await login(form.email, form.senha);
-      navigate('/educadores');
+      navigate('/');
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.error || 'Credenciais inválidas. Tente novamente.';
       setError(msg);

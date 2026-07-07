@@ -215,7 +215,7 @@ export default function EducadoresPage() {
         <Button id="novo-educador-btn" label="Novo Educador" icon="pi pi-plus" onClick={abrirNovo} />
       </div>
 
-      <div className="p-inputgroup search-bar">
+      <div className="p-inputgroup" style={{ maxWidth: 340, marginBottom: '1rem' }}>
         <span className="p-inputgroup-addon"><i className="pi pi-search" /></span>
         <InputText
           placeholder="Buscar educador..."

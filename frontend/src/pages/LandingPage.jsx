@@ -6,6 +6,15 @@ import logo from '../assets/logo.svg';
 
 const LandingPage = () => {
   const { isAuthenticated } = useAuth();
+
+  const handleSmoothScroll = (e, targetId) => {
+    e.preventDefault();
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="landing-page">
       {/* Hero Section */}
@@ -18,13 +27,19 @@ const LandingPage = () => {
               Plataforma de gestão para ONGs e projetos sociais na alfabetização de jovens e adultos.
             </p>
             <div className="hero-buttons">
-              <Link to="/cadastro" className="hero-btn primary">
-                <i className="pi pi-rocket" />
-                Começar Agora
-              </Link>
-              <a href="#sobre" className="hero-btn secondary">
+              {!isAuthenticated && (
+                <Link to="/cadastro" className="hero-btn primary">
+                  <i className="pi pi-rocket" />
+                  Começar Agora
+                </Link>
+              )}
+              <a
+                href="#como-funciona"
+                className="hero-btn secondary"
+                onClick={(e) => handleSmoothScroll(e, 'como-funciona')}
+              >
                 <i className="pi pi-info-circle" />
-                Saiba Mais
+                Como Funciona
               </a>
             </div>
           </div>
