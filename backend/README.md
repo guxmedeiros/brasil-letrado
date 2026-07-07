@@ -356,4 +356,3 @@ O sistema utiliza autenticação JWT (JSON Web Token) e multi-tenancy por Instit
 #### 5. Excluir aluno
 * **Método:** `DELETE`
 * **Rota:** `/api/alunos/{id}` (ex: `/api/alunos/3`)
-* **Resposta Esperada (`24 No Content`):** *(Sem conteúdo)*
