@@ -10,10 +10,9 @@ import BackToTop from './components/BackToTop';
 import './index.css';
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
   const location = useLocation();
   
-  const isLandingPage = location.pathname === '/' && !isAuthenticated;
+  const isLandingPage = location.pathname === '/';
 
   if (isLandingPage) {
     return (

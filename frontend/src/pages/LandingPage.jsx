@@ -1,9 +1,11 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.svg';
 
 const LandingPage = () => {
+  const { isAuthenticated } = useAuth();
   return (
     <div className="landing-page">
       {/* Hero Section */}
@@ -191,21 +193,23 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="landing-section cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Pronto para começar?</h2>
-            <p>
-              Cadastre a sua instituição gratuitamente e junte-se a nós na luta pela educação de qualidade.
-            </p>
-            <Link to="/cadastro" className="cta-btn">
-              <i className="pi pi-rocket" />
-              Criar Conta Gratuita
-            </Link>
+      {/* CTA Final - Exibido apenas para usuários não autenticados */}
+      {!isAuthenticated && (
+        <section className="landing-section cta-section">
+          <div className="container">
+            <div className="cta-content">
+              <h2>Pronto para começar?</h2>
+              <p>
+                Cadastre a sua instituição gratuitamente e junte-se a nós na luta pela educação de qualidade.
+              </p>
+              <Link to="/cadastro" className="cta-btn">
+                <i className="pi pi-rocket" />
+                Criar Conta Gratuita
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="landing-footer">

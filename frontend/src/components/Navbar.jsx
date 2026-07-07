@@ -1,21 +1,29 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.svg';
 
 export default function Navbar() {
   const { isAuthenticated, instituicao, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <nav className="navbar">
-        <NavLink to="/" className="navbar-brand">
+        <NavLink to="/" className="navbar-brand" onClick={handleLogoClick}>
           <img src={logo} alt="Logo Brasil Letrado" className="brand-icon" />
           <span>
             Brasil Letrado
@@ -46,7 +54,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <NavLink to="/dashboard" className="navbar-brand">
+      <NavLink to="/" className="navbar-brand" onClick={handleLogoClick}>
         <img src={logo} alt="Logo Brasil Letrado" className="brand-icon" />
         <span>
           Brasil Letrado

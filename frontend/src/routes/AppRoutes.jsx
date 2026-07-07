@@ -15,12 +15,12 @@ export default function AppRoutes() {
 
   return (
     <Routes>
-      {/* Rota raiz - Landing ou Dashboard */}
-      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+      {/* Rota raiz - Landing Page para todos os usuários */}
+      <Route path="/" element={<LandingPage />} />
 
-      {/* Rotas públicas */}
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
-      <Route path="/cadastro" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
+      {/* Rotas públicas - não redirecionar se já autenticado, permitir acessar */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/cadastro" element={<RegisterPage />} />
 
       {/* Rotas privadas */}
       <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
