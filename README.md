@@ -10,6 +10,11 @@ Este é o repositório principal do projeto **Brasil Letrado**, contendo o códi
 * **ODS escolhida:** ODS 4 — Educação de Qualidade (especialmente focado na Meta 4.6 — Alfabetização e capacitação de jovens e adultos)
 * **Nome do aluno:** Gustavo Medeiros Moysés
 * **Objetivo do projeto:** Facilitar a gestão administrativa de projetos sociais, institutos e ONGs independentes de alfabetização de adultos. O sistema organiza turmas, vincula educadores, matricula alunos e acompanha o nível de alfabetização de cada um (Iniciante, Intermediário e Avançado), substituindo controles manuais por um fluxo automatizado e centralizado.
+* **Principais Funcionalidades Implementadas:**
+  * Landing Page pública com apresentação do projeto
+  * Autenticação JWT para instituições
+  * Dashboard com métricas e estatísticas
+  * Gestão completa de Educadores, Turmas e Alunos
 
 ---
 
@@ -20,7 +25,8 @@ Este é o repositório principal do projeto **Brasil Letrado**, contendo o códi
 1. Abra um terminal na pasta `backend/`.
 2. Certifique-se de ter o JDK 21 ou superior instalado.
 3. Certifique-se de que o MySQL esteja rodando localmente na porta `3306`.
-4. Execute o comando Maven para rodar a aplicação:
+4. Crie um arquivo `application-local.properties` em `backend/src/main/resources/` (usando `application.properties` como base) e configure suas credenciais do MySQL (usuário e senha).
+5. Execute o comando Maven para rodar a aplicação:
    ```bash
    # No Windows:
    .\mvnw.cmd spring-boot:run
@@ -28,7 +34,11 @@ Este é o repositório principal do projeto **Brasil Letrado**, contendo o códi
    # No Linux/macOS:
    ./mvnw spring-boot:run
    ```
-5. A API estará de pé em `http://localhost:8080` e os dados iniciais de teste (seed) serão populados automaticamente caso o banco esteja vazio. O Swagger interativo pode ser acessado em `http://localhost:8080/swagger-ui.html`.
+6. A API estará de pé em `http://localhost:8080` e os dados iniciais de teste (seed) serão populados automaticamente caso o banco esteja vazio. O Swagger interativo pode ser acessado em `http://localhost:8080/swagger-ui.html`.
+
+### Credenciais de Teste Padrão:
+* Email: `contato@sementesdosaber.org`
+* Senha: `123456`
 
 ### Como rodar o front-end
 
@@ -43,6 +53,7 @@ Este é o repositório principal do projeto **Brasil Letrado**, contendo o códi
    ```
 4. O aplicativo web abrirá no seu navegador em `http://localhost:5173`.
 
-### Nome do arquivo do script SQL
-
-* O arquivo SQL com os comandos DDL para criação do banco de dados e suas tabelas é o: **[schema.sql](file:///C:/Users/Gustavo/.gemini/antigravity-ide/scratch/brasil-letrado/schema.sql)** (localizado na raiz deste repositório).
+### Fluxo de Navegação:
+* A Landing Page (`/`) é a página inicial para todos os usuários
+* Usuários não autenticados acessam `/login` ou `/cadastro` para autenticar-se ou criar uma conta
+* Após login, a navegação dá acesso ao `/dashboard` e às páginas de gestão (`/educadores`, `/turmas`, `/alunos`)

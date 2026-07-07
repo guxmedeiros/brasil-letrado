@@ -4,6 +4,55 @@ Esta é a documentação das rotas, métodos e payloads da API REST do **Brasil 
 
 ---
 
+## 🔐 Autenticação (`/api/auth`)
+
+O sistema utiliza autenticação JWT (JSON Web Token) e multi-tenancy por Instituição (ONG/Projeto).
+
+#### 1. Login de Instituição
+* **Método:** `POST`
+* **Rota:** `/api/auth/login`
+* **Body enviado:**
+  ```json
+  {
+    "email": "contato@sementesdosaber.org",
+    "senha": "123456"
+  }
+  ```
+* **Resposta Esperada (JSON - `200 OK`):**
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "instituicao": {
+      "id": 1,
+      "nome": "ONG Sementes do Saber",
+      "email": "contato@sementesdosaber.org"
+    }
+  }
+  ```
+
+#### 2. Cadastro de Nova Instituição
+* **Método:** `POST`
+* **Rota:** `/api/auth/register`
+* **Body enviado:**
+  ```json
+  {
+    "nome": "Instituto Alfabetizar é Viver",
+    "cnpj": "00.000.000/0001-00",
+    "email": "contato@alfabetizareviver.org",
+    "senha": "123456"
+  }
+  ```
+* **Resposta Esperada (JSON - `201 Created`):**
+  ```json
+  {
+    "id": 2,
+    "nome": "Instituto Alfabetizar é Viver",
+    "email": "contato@alfabetizareviver.org"
+  }
+  ```
+
+---
+
 ## 📌 Endpoints da API e Exemplos de Resposta
 
 ### 🧑‍🏫 Educadores (`/api/educadores`)
