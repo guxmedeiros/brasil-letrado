@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Navbar.css';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
@@ -91,19 +92,10 @@ export default function Navbar() {
         <div className="navbar-actions desktop-only">
           {!isAuthenticated ? (
             <>
-              <NavLink to="/login" className="btn-logout" style={{ textDecoration: 'none' }}>
+              <NavLink to="/login" className="btn-logout">
                 Entrar
               </NavLink>
-              <NavLink to="/cadastro" className="btn-primary" style={{
-                background: 'var(--amber)',
-                color: 'var(--navy)',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '0.4rem 0.85rem',
-                fontWeight: 700,
-                fontSize: '0.82rem',
-                textDecoration: 'none'
-              }}>
+              <NavLink to="/cadastro" className="btn-primary-custom">
                 Cadastrar
               </NavLink>
             </>
@@ -137,23 +129,21 @@ export default function Navbar() {
         className="p-sidebar-sm"
         aria-label="Menu de navegação"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="sidebar-content-wrapper">
           {!isAuthenticated ? (
             <>
               <NavLink
                 to="/login"
-                className="nav-link"
+                className="nav-link sidebar-link"
                 onClick={handleLinkClick}
-                style={{ textDecoration: 'none', padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
                 <i className="pi pi-sign-in" />
                 Entrar
               </NavLink>
               <NavLink
                 to="/cadastro"
-                className="nav-link"
+                className="nav-link sidebar-link sidebar-link-primary"
                 onClick={handleLinkClick}
-                style={{ textDecoration: 'none', padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--amber)', color: 'var(--navy)', borderRadius: '8px', marginBottom: '1rem' }}
               >
                 <i className="pi pi-user-plus" />
                 Cadastrar
@@ -162,10 +152,10 @@ export default function Navbar() {
           ) : (
             <>
               {instituicao?.nome && (
-                <div style={{ padding: '1rem', borderBottom: '1px solid var(--border)', marginBottom: '0.5rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div className="sidebar-inst-section">
+                  <div className="sidebar-inst-wrapper">
                     <i className="pi pi-building" />
-                    <span style={{ fontWeight: 700 }}>{instituicao.nome}</span>
+                    <span className="sidebar-inst-name">{instituicao.nome}</span>
                   </div>
                 </div>
               )}
@@ -173,21 +163,19 @@ export default function Navbar() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+                  className={({ isActive }) => `nav-link sidebar-link${isActive ? ' active' : ''}`}
                   onClick={handleLinkClick}
-                  style={{ textDecoration: 'none', padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                   <i className={item.icon} />
                   {item.label}
                 </NavLink>
               ))}
-              <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
+              <div className="sidebar-logout-wrapper">
                 <button
                   id="logout-btn"
-                  className="btn-logout"
+                  className="btn-logout sidebar-logout-btn"
                   onClick={handleLogout}
                   title="Sair da conta"
-                  style={{ width: '100%', justifyContent: 'flex-start', padding: '0.75rem 1rem', marginTop: '0.5rem' }}
                 >
                   <i className="pi pi-sign-out" />
                   Sair

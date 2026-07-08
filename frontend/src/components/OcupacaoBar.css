@@ -1,0 +1,30 @@
+.ocupacao-bar { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; }
+
+.ocupacao-track {
+  flex: 1; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden;
+}
+
+.ocupacao-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--green-mid), var(--green-dark));
+  transition: width 0.4s ease;
+}
+
+.ocupacao-fill.warning { background: linear-gradient(90deg, #ffa726, #e65100); }
+.ocupacao-fill.full    { background: linear-gradient(90deg, #ef5350, #b71c1c); }
+
+.ocupacao-text {
+  font-size: 0.82rem;
+  min-width: 60px;
+}
+
+.ocupacao-percent {
+  font-size: 0.75rem;
+  min-width: 32px;
+  color: #718096;
+}
+
+.ocupacao-empty {
+  font-size: 0.85rem;
+}

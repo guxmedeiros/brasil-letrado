@@ -1,0 +1,26 @@
+.page-title-icon {
+  margin-right: 0.5rem;
+  color: #1565c0;
+}
+
+.data-table-rounded {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.data-table-actions-col {
+  width: 7rem;
+}
+
+.dialog-width {
+  width: 520px;
+}
+
+.turma-option-full {
+  opacity: 0.6;
+}
+
+.turma-option-lotada {
+  color: #c0392b;
+  margin-left: 0.5rem;
+}

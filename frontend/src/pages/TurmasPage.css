@@ -1,0 +1,16 @@
+.datatable-custom {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.datatable-col-ocupacao {
+  min-width: 180px;
+}
+
+.datatable-col-acoes {
+  width: 7rem;
+}
+
+.dialog-turmas {
+  width: 520px;
+}

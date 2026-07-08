@@ -15,6 +15,7 @@ import { required, minLength, maxLength, telefone, validate, trim } from '../uti
 import SearchBar from '../components/SearchBar';
 import LoadingState from '../components/LoadingState';
 import FormField from '../components/FormField';
+import './AlunosPage.css';
 
 const NIVEL_OPTIONS = [
   { label: '⚪ Iniciante', value: 'INICIANTE' },
@@ -185,7 +186,7 @@ export default function AlunosPage() {
 
       <div className="page-header">
         <div>
-          <h1 className="page-title"><i className="pi pi-user" style={{ marginRight: '0.5rem', color: '#1565c0' }} />Alunos</h1>
+          <h1 className="page-title"><i className="pi pi-user page-title-icon" />Alunos</h1>
           <p className="page-subtitle">Gerencie os alunos matriculados nas turmas de alfabetização</p>
         </div>
         <Button id="novo-aluno-btn" label="Novo Aluno" icon="pi pi-plus" onClick={abrirNovo} />
@@ -210,14 +211,14 @@ export default function AlunosPage() {
           dataKey="id"
           stripedRows
           removableSort
-          style={{ borderRadius: 12, overflow: 'hidden' }}
+          className="data-table-rounded"
         >
           <Column field="nome" header="Nome" sortable />
           <Column field="dataNascimento" header="Data de Nasc." body={dataNascimentoTemplate} sortable />
           <Column field="telefone" header="Telefone" />
           <Column field="nivelAlfabetizacao" header="Nível" body={nivelTemplate} sortable />
           <Column field="turmaNome" header="Turma" sortable />
-          <Column header="Ações" body={acoesTemplate} style={{ width: '7rem' }} />
+          <Column header="Ações" body={acoesTemplate} className="data-table-actions-col" />
         </DataTable>
       )}
 
@@ -226,7 +227,7 @@ export default function AlunosPage() {
         header={editando ? 'Editar Aluno' : 'Novo Aluno'}
         visible={dialogVisible}
         onHide={fecharDialog}
-        style={{ width: '520px' }}
+        className="dialog-width"
         modal
         footer={dialogFooter}
       >
@@ -293,9 +294,9 @@ export default function AlunosPage() {
                   isFull = qtdAlunos >= turma.capacidadeMaxima;
                 }
                 return (
-                  <div style={{ opacity: isFull ? 0.6 : 1 }}>
+                  <div className={isFull ? 'turma-option-full' : ''}>
                     {option.label}
-                    {isFull && <span style={{ color: '#c0392b', marginLeft: '0.5rem' }}>(Lotada)</span>}
+                    {isFull && <span className="turma-option-lotada">(Lotada)</span>}
                   </div>
                 );
               }}

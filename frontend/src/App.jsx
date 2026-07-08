@@ -7,7 +7,7 @@ import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
-import './index.css';
+import './styles/global.css';
 
 function AppContent() {
   const location = useLocation();

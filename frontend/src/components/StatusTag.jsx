@@ -1,4 +1,5 @@
 import React from 'react';
+import './StatusTag.css';
 
 const NIVEL_CONFIG = {
   INICIANTE: {
@@ -29,7 +30,7 @@ export function NivelTag({ nivel }) {
   if (!config) return <span>{nivel}</span>;
   return (
     <span className={`nivel-tag ${config.className}`}>
-      <i className={config.icon} style={{ fontSize: '0.75rem' }} />
+      <i className={`${config.icon} status-tag-icon`} />
       {config.label}
     </span>
   );
@@ -40,7 +41,7 @@ export function TurnoTag({ turno }) {
   if (!config) return <span>{turno}</span>;
   return (
     <span className={`turno-tag ${config.className}`}>
-      <i className={config.icon} style={{ fontSize: '0.75rem' }} />
+      <i className={`${config.icon} status-tag-icon`} />
       {config.label}
     </span>
   );

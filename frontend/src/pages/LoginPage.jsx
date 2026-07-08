@@ -7,6 +7,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { useAuth } from '../context/AuthContext';
 import { required, email, validate } from '../utils/validators';
 import logo from '../assets/logo.svg';
+import './LoginPage.css';
 
 const EMPTY_FORM = { email: '', senha: '' };
 
@@ -126,8 +127,8 @@ export default function LoginPage() {
             disabled={loading}
           >
             {loading ? (
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                <ProgressSpinner style={{ width: '18px', height: '18px' }} strokeWidth="4" />
+              <span className="auth-loading-wrapper">
+                <ProgressSpinner className="auth-loading-spinner" strokeWidth="4" />
                 Entrando...
               </span>
             ) : 'Entrar'}

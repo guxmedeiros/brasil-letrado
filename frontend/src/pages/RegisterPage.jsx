@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { required, email, minLength, cnpj, validate } from '../utils/validators';
 import logo from '../assets/logo.svg';
+import './RegisterPage.css';
 
 const EMPTY_FORM = { nome: '', cnpj: '', email: '', senha: '', confirmarSenha: '' };
 
@@ -177,8 +178,8 @@ export default function RegisterPage() {
             disabled={loading}
           >
             {loading ? (
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                <ProgressSpinner style={{ width: '18px', height: '18px' }} strokeWidth="4" />
+              <span className="auth-loading-wrapper">
+                <ProgressSpinner className="auth-loading-spinner" strokeWidth="4" />
                 Cadastrando...
               </span>
             ) : 'Criar conta'}

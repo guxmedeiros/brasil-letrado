@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'primereact/button';
+import './EducadorCard.css';
 
 export default function EducadorCard({ educador, onEditar, onExcluir }) {
   const initials = educador.nome
@@ -44,7 +45,7 @@ export default function EducadorCard({ educador, onEditar, onExcluir }) {
           </div>
         )}
         {!educador.formacao && !educador.email && !educador.telefone && (
-          <div className="edu-info-row" style={{ color: '#c0c0c0', fontStyle: 'italic' }}>
+          <div className="edu-info-row edu-card-empty-info">
             Sem informações adicionais
           </div>
         )}

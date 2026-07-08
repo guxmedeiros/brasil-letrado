@@ -5,6 +5,7 @@ import { educadorService } from '../services/educadorService';
 import { turmaService } from '../services/turmaService';
 import { alunoService } from '../services/alunoService';
 import { Link } from 'react-router-dom';
+import './DashboardPage.css';
 
 export default function DashboardPage() {
   const [educadores, setEducadores] = useState([]);
@@ -62,7 +63,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="loading-container">
-        <ProgressSpinner style={{ width: 50, height: 50 }} />
+        <ProgressSpinner className="dashboard-spinner" />
         <span>Carregando dashboard…</span>
       </div>
     );
@@ -75,7 +76,7 @@ export default function DashboardPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">
-            <i className="pi pi-home" style={{ marginRight: '0.5rem' }} />
+            <i className="pi pi-home dashboard-home-icon" />
             Dashboard
           </h1>
           <p className="page-subtitle">Visão geral do seu programa de alfabetização</p>
@@ -93,7 +94,7 @@ export default function DashboardPage() {
                 Gerenciar alunos <i className="pi pi-arrow-right" />
               </Link>
             </div>
-            <div className="stat-card-icon" style={{ background: 'rgba(30, 86, 49, 0.1)', color: '#1E5631' }}>
+            <div className="stat-card-icon stat-card-icon-alunos">
               <i className="pi pi-users" />
             </div>
           </div>
@@ -108,7 +109,7 @@ export default function DashboardPage() {
                 Gerenciar turmas <i className="pi pi-arrow-right" />
               </Link>
             </div>
-            <div className="stat-card-icon" style={{ background: 'rgba(245, 166, 35, 0.1)', color: '#F5A623' }}>
+            <div className="stat-card-icon stat-card-icon-turmas">
               <i className="pi pi-building" />
             </div>
           </div>
@@ -123,7 +124,7 @@ export default function DashboardPage() {
                 Gerenciar educadores <i className="pi pi-arrow-right" />
               </Link>
             </div>
-            <div className="stat-card-icon" style={{ background: 'rgba(30, 58, 95, 0.1)', color: '#1E3A5F' }}>
+            <div className="stat-card-icon stat-card-icon-educadores">
               <i className="pi pi-graduation-cap" />
             </div>
           </div>
@@ -155,7 +156,7 @@ export default function DashboardPage() {
         <div className="dashboard-section-card">
           <div className="section-card-header">
             <div className="section-card-title">
-              <i className="pi pi-chart-bar" style={{ color: '#1E5631' }} />
+              <i className="pi pi-chart-bar dashboard-chart-icon" />
               <h3>Nível de Alfabetização dos Alunos</h3>
             </div>
             <p className="section-card-subtitle">Distribuição pedagógica atual em todos os projetos sociais.</p>
@@ -164,7 +165,7 @@ export default function DashboardPage() {
           <div className="nivel-list">
             <div className="nivel-item">
               <div className="nivel-item-left">
-                <span className="nivel-dot" style={{ background: '#F5A623' }} />
+                <span className="nivel-dot nivel-dot-iniciante" />
                 <span className="nivel-name">Iniciante (Primeiros passos)</span>
               </div>
               <div className="nivel-item-right">
@@ -177,7 +178,7 @@ export default function DashboardPage() {
 
             <div className="nivel-item">
               <div className="nivel-item-left">
-                <span className="nivel-dot" style={{ background: '#1E3A5F' }} />
+                <span className="nivel-dot nivel-dot-intermediario" />
                 <span className="nivel-name">Intermediário (Silábico-Alfabético)</span>
               </div>
               <div className="nivel-item-right">
@@ -190,7 +191,7 @@ export default function DashboardPage() {
 
             <div className="nivel-item">
               <div className="nivel-item-left">
-                <span className="nivel-dot" style={{ background: '#1E5631' }} />
+                <span className="nivel-dot nivel-dot-avancado" />
                 <span className="nivel-name">Avançado (Autônomo / Leitura Crítica)</span>
               </div>
               <div className="nivel-item-right">

@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import './variables.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  background: var(--white);
+  color: var(--text-primary);
+}
+
+/* App Layout */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  padding: 2.25rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Page Headers */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--green-dark);
+}
+
+.page-title-icon {
+  margin-right: 0.5rem;
+}
+
+.page-title-icon-turmas {
+  color: #1565c0;
+}
+
+.page-subtitle {
+  margin: 0.3rem 0 0 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* Form grids */
+.form-grid { display: grid; gap: 1.25rem; }
+
+.form-grid .field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.form-grid .field label { font-size: 0.84rem; font-weight: 600; color: #4a5568; }
+
+/* Action Buttons */
+.action-buttons { display: flex; gap: 0.4rem; }
+
+/* PrimeReact Overrides */
+.p-button:not(.p-button-text):not(.p-button-outlined):not(.p-button-danger):not(.p-button-warning):not(.p-button-info):not(.p-button-help):not(.p-button-secondary):not(.p-button-success) {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+}
+
+.p-button:not(.p-button-text):not(.p-button-outlined):not(.p-button-danger):not(.p-button-warning):not(.p-button-info):not(.p-button-help):not(.p-button-secondary):not(.p-button-success):hover {
+  background: var(--green-mid);
+  border-color: var(--green-mid);
+}
+
+.p-toast .p-toast-message { border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+
+.p-dialog .p-dialog-header { border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem; }
+.p-dialog .p-dialog-content { padding: 1.5rem; }
+.p-dialog .p-dialog-footer {
+  border-radius: 0 0 12px 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  background: var(--surface);
+  color: var(--green-dark);
+}
+
+/* Loading Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  gap: 1rem;
+  color: var(--text-muted);
+}

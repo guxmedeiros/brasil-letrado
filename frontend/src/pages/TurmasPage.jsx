@@ -16,6 +16,7 @@ import OcupacaoBar from '../components/OcupacaoBar';
 import SearchBar from '../components/SearchBar';
 import LoadingState from '../components/LoadingState';
 import FormField from '../components/FormField';
+import './TurmasPage.css';
 
 const TURNO_OPTIONS = [
   { label: '☀️  Manhã', value: 'MANHA' },
@@ -176,7 +177,10 @@ export default function TurmasPage() {
 
       <div className="page-header">
         <div>
-          <h1 className="page-title"><i className="pi pi-users" style={{ marginRight: '0.5rem', color: '#1565c0' }} />Turmas</h1>
+          <h1 className="page-title">
+            <i className="pi pi-users page-title-icon page-title-icon-turmas" />
+            Turmas
+          </h1>
           <p className="page-subtitle">Gerencie as turmas e sua ocupação</p>
         </div>
         <Button id="nova-turma-btn" label="Nova Turma" icon="pi pi-plus" onClick={abrirNovo} />
@@ -201,14 +205,14 @@ export default function TurmasPage() {
           dataKey="id"
           stripedRows
           removableSort
-          style={{ borderRadius: 12, overflow: 'hidden' }}
+          className="datatable-custom"
         >
           <Column field="nome" header="Nome da Turma" sortable />
           <Column field="turno" header="Turno" body={turnoTemplate} sortable />
           <Column field="diasSemana" header="Dias" />
           <Column field="educadorNome" header="Educador" sortable />
-          <Column header="Ocupação" body={ocupacaoTemplate} style={{ minWidth: '180px' }} />
-          <Column header="Ações" body={acoesTemplate} style={{ width: '7rem' }} />
+          <Column header="Ocupação" body={ocupacaoTemplate} className="datatable-col-ocupacao" />
+          <Column header="Ações" body={acoesTemplate} className="datatable-col-acoes" />
         </DataTable>
       )}
 
@@ -217,7 +221,7 @@ export default function TurmasPage() {
         header={editando ? 'Editar Turma' : 'Nova Turma'}
         visible={dialogVisible}
         onHide={fecharDialog}
-        style={{ width: '520px' }}
+        className="dialog-turmas"
         modal
         footer={dialogFooter}
       >

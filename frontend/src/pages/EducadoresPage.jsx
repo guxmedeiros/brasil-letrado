@@ -11,6 +11,7 @@ import SearchBar from '../components/SearchBar';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
 import FormField from '../components/FormField';
+import './EducadoresPage.css';
 
 const EMPTY_FORM = { nome: '', email: '', telefone: '', formacao: '', fotoUrl: '' };
 
@@ -171,7 +172,7 @@ export default function EducadoresPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">
-            <i className="pi pi-graduation-cap" style={{ marginRight: '0.5rem' }} />
+            <i className="pi pi-graduation-cap page-title-icon" />
             Educadores
           </h1>
           <p className="page-subtitle">Gerencie os educadores das turmas de alfabetização</p>
@@ -212,7 +213,7 @@ export default function EducadoresPage() {
         header={editando ? 'Editar Educador' : 'Novo Educador'}
         visible={dialogVisible}
         onHide={fecharDialog}
-        style={{ width: '480px' }}
+        className="dialog-educadores"
         modal
         footer={dialogFooter}
       >
@@ -263,14 +264,14 @@ export default function EducadoresPage() {
               className={errors.fotoUrl ? 'p-invalid' : ''}
             />
             {form.fotoUrl && (
-              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div className="edu-preview-wrapper">
                 <img
                   src={form.fotoUrl}
                   alt="preview"
-                  style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }}
+                  className="edu-preview-img"
                   onError={e => { e.target.style.display = 'none'; }}
                 />
-                <small style={{ color: '#718096' }}>Pré-visualização</small>
+                <small className="edu-preview-text">Pré-visualização</small>
               </div>
             )}
           </FormField>

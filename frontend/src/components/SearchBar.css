@@ -1,0 +1,12 @@
+.searchbar-wrapper {
+  max-width: 340px;
+  margin-bottom: 1rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 340px;
+  margin-bottom: 1.25rem;
+}
