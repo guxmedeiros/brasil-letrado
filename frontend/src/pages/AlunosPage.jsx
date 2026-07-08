@@ -284,7 +284,14 @@ export default function AlunosPage() {
               showClear
               itemTemplate={(option) => {
                 const turma = turmas.find(t => t.value === option.value);
-                const isFull = turma && turma.quantidadeAlunos >= turma.capacidadeMaxima;
+                let isFull = false;
+                if (turma && turma.capacidadeMaxima != null) { // só verifica se capacidade estiver definida
+                  let qtdAlunos = turma.quantidadeAlunos ?? 0;
+                  if (editando && editando.turmaId === option.value) {
+                    qtdAlunos = Math.max(0, qtdAlunos - 1);
+                  }
+                  isFull = qtdAlunos >= turma.capacidadeMaxima;
+                }
                 return (
                   <div style={{ opacity: isFull ? 0.6 : 1 }}>
                     {option.label}
@@ -292,9 +299,20 @@ export default function AlunosPage() {
                   </div>
                 );
               }}
-              disabled={(option) => {
+              optionDisabled={(option) => {
                 const turma = turmas.find(t => t.value === option.value);
-                return turma && turma.quantidadeAlunos >= turma.capacidadeMaxima;
+                // Não desabilita a turma que o aluno já está (mesmo que esteja lotada)
+                if (editando && editando.turmaId === option.value) {
+                  return false;
+                }
+                if (!turma || turma.capacidadeMaxima == null) { // não desabilita se capacidade não estiver definida
+                  return false;
+                }
+                let qtdAlunos = turma.quantidadeAlunos ?? 0;
+                if (editando && editando.turmaId === option.value) {
+                  qtdAlunos = Math.max(0, qtdAlunos - 1);
+                }
+                return qtdAlunos >= turma.capacidadeMaxima;
               }}
             />
           </FormField>
