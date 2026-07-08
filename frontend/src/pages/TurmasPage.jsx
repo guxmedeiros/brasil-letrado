@@ -6,6 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
+import { MultiSelect } from 'primereact/multiselect';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { TurnoTag } from '../components/StatusTag';
@@ -24,7 +25,32 @@ const TURNO_OPTIONS = [
   { label: '🌙  Noite', value: 'NOITE' },
 ];
 
-const EMPTY_FORM = { nome: '', turno: null, diasSemana: '', capacidadeMaxima: null, educadorId: null };
+const DIA_SEMANA_OPTIONS = [
+  { label: 'Segunda-feira', value: 'SEGUNDA' },
+  { label: 'Terça-feira', value: 'TERCA' },
+  { label: 'Quarta-feira', value: 'QUARTA' },
+  { label: 'Quinta-feira', value: 'QUINTA' },
+  { label: 'Sexta-feira', value: 'SEXTA' },
+  { label: 'Sábado', value: 'SABADO' },
+  { label: 'Domingo', value: 'DOMINGO' },
+];
+
+const EMPTY_FORM = { nome: '', turno: null, diasSemana: [], capacidadeMaxima: null, educadorId: null };
+
+// Função para formatar a lista de dias para exibição
+const formatarDiasSemana = (dias) => {
+  if (!dias || dias.length === 0) return '';
+  const diaMap = {
+    'SEGUNDA': 'Segunda',
+    'TERCA': 'Terça',
+    'QUARTA': 'Quarta',
+    'QUINTA': 'Quinta',
+    'SEXTA': 'Sexta',
+    'SABADO': 'Sábado',
+    'DOMINGO': 'Domingo'
+  };
+  return dias.map(d => diaMap[d] || d).join(', ');
+};
 
 export default function TurmasPage() {
   const [turmas, setTurmas] = useState([]);
@@ -65,7 +91,7 @@ export default function TurmasPage() {
     setForm({
       nome: turma.nome || '',
       turno: turma.turno || null,
-      diasSemana: turma.diasSemana || '',
+      diasSemana: turma.diasSemana || [],
       capacidadeMaxima: turma.capacidadeMaxima || null,
       educadorId: turma.educadorId || null,
     });
@@ -87,7 +113,7 @@ export default function TurmasPage() {
       (v) => maxLength(100)(v, 'Nome deve ter no máximo 100 caracteres')
     ]);
     errs.diasSemana = validate(form.diasSemana, [
-      (v) => maxLength(100)(v, 'Dias da semana devem ter no máximo 100 caracteres')
+      (v) => required(v, 'Selecione pelo menos um dia da semana')
     ]);
     errs.capacidadeMaxima = validate(form.capacidadeMaxima, [
       (v) => minNumber(1)(v, 'Capacidade mínima é 1'),
@@ -107,8 +133,7 @@ export default function TurmasPage() {
     try {
       const payload = {
         ...form,
-        nome: trim(form.nome),
-        diasSemana: trim(form.diasSemana)
+        nome: trim(form.nome)
       };
       if (editando) {
         await turmaService.atualizar(editando.id, payload);
@@ -151,6 +176,10 @@ export default function TurmasPage() {
   };
 
   const turnoTemplate = (rowData) => <TurnoTag turno={rowData.turno} />;
+
+  const diasTemplate = (rowData) => (
+    <span>{formatarDiasSemana(rowData.diasSemana)}</span>
+  );
 
   const ocupacaoTemplate = (rowData) => (
     <OcupacaoBar quantidade={rowData.quantidadeAlunos || 0} capacidade={rowData.capacidadeMaxima} />
@@ -200,7 +229,7 @@ export default function TurmasPage() {
           paginator rows={10}
           rowsPerPageOptions={[10, 20, 50]}
           globalFilter={globalFilter}
-          globalFilterFields={['nome', 'diasSemana', 'educadorNome']}
+          globalFilterFields={['nome', 'educadorNome']}
           emptyMessage="Nenhuma turma encontrada."
           dataKey="id"
           stripedRows
@@ -209,7 +238,7 @@ export default function TurmasPage() {
         >
           <Column field="nome" header="Nome da Turma" sortable />
           <Column field="turno" header="Turno" body={turnoTemplate} sortable />
-          <Column field="diasSemana" header="Dias" />
+          <Column field="diasSemana" header="Dias" body={diasTemplate} />
           <Column field="educadorNome" header="Educador" sortable />
           <Column header="Ocupação" body={ocupacaoTemplate} className="datatable-col-ocupacao" />
           <Column header="Ações" body={acoesTemplate} className="datatable-col-acoes" />
@@ -245,13 +274,16 @@ export default function TurmasPage() {
               placeholder="Selecione o turno"
             />
           </FormField>
-          <FormField label="Dias da Semana" htmlFor="turma-dias" error={errors.diasSemana}>
-            <InputText
+          <FormField label="Dias da Semana *" htmlFor="turma-dias" error={errors.diasSemana}>
+            <MultiSelect
               id="turma-dias"
               value={form.diasSemana}
-              onChange={e => onChange('diasSemana', e.target.value)}
-              placeholder="Ex: Segunda, Quarta"
+              options={DIA_SEMANA_OPTIONS}
+              onChange={e => onChange('diasSemana', e.value)}
+              placeholder="Selecione os dias"
+              display="chip"
               className={errors.diasSemana ? 'p-invalid' : ''}
+              style={{ minHeight: 'auto' }}
             />
           </FormField>
           <FormField label="Capacidade Máxima" htmlFor="turma-cap" error={errors.capacidadeMaxima}>

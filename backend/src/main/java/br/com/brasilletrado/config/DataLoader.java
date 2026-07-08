@@ -1,6 +1,7 @@
 package br.com.brasilletrado.config;
 
 import br.com.brasilletrado.model.Aluno;
+import br.com.brasilletrado.model.DiaSemana;
 import br.com.brasilletrado.model.Educador;
 import br.com.brasilletrado.model.Instituicao;
 import br.com.brasilletrado.model.NivelAlfabetizacao;
@@ -125,23 +126,37 @@ public class DataLoader implements CommandLineRunner {
 
     private List<Turma> criarTurmas(Instituicao instituicao, List<Educador> educadores) {
         List<Turma> turmas = new ArrayList<>();
-        String[][] dadosTurmas = {
-            {"Turma Alfa", "MANHA", "Segunda, Quarta, Sexta", "10"},
-            {"Turma Beta", "NOITE", "Terça, Quinta", "10"},
-            {"Turma Gama", "TARDE", "Segunda, Terça, Quarta", "10"}
-        };
-
-        for (int i = 0; i < dadosTurmas.length; i++) {
-            Turma turma = Turma.builder()
-                    .nome(dadosTurmas[i][0])
-                    .turno(Turno.valueOf(dadosTurmas[i][1]))
-                    .diasSemana(dadosTurmas[i][2])
-                    .capacidadeMaxima(Integer.parseInt(dadosTurmas[i][3]))
-                    .educador(educadores.get(i % educadores.size()))
-                    .instituicao(instituicao)
-                    .build();
-            turmas.add(turmaRepository.save(turma));
-        }
+        
+        Turma turma1 = Turma.builder()
+                .nome("Turma Alfa")
+                .turno(Turno.MANHA)
+                .diasSemana(List.of(DiaSemana.SEGUNDA, DiaSemana.QUARTA, DiaSemana.SEXTA))
+                .capacidadeMaxima(10)
+                .educador(educadores.get(0))
+                .instituicao(instituicao)
+                .build();
+        turmas.add(turmaRepository.save(turma1));
+        
+        Turma turma2 = Turma.builder()
+                .nome("Turma Beta")
+                .turno(Turno.NOITE)
+                .diasSemana(List.of(DiaSemana.TERCA, DiaSemana.QUINTA))
+                .capacidadeMaxima(10)
+                .educador(educadores.get(1))
+                .instituicao(instituicao)
+                .build();
+        turmas.add(turmaRepository.save(turma2));
+        
+        Turma turma3 = Turma.builder()
+                .nome("Turma Gama")
+                .turno(Turno.TARDE)
+                .diasSemana(List.of(DiaSemana.SEGUNDA, DiaSemana.TERCA, DiaSemana.QUARTA))
+                .capacidadeMaxima(10)
+                .educador(educadores.get(2))
+                .instituicao(instituicao)
+                .build();
+        turmas.add(turmaRepository.save(turma3));
+        
         return turmas;
     }
 

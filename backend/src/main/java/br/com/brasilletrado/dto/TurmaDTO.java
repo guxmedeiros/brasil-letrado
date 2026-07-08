@@ -1,7 +1,11 @@
 package br.com.brasilletrado.dto;
 
+import br.com.brasilletrado.model.DiaSemana;
 import br.com.brasilletrado.model.Turno;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TurmaDTO {
 
@@ -11,7 +15,10 @@ public class TurmaDTO {
     private String nome;
 
     private Turno turno;
-    private String diasSemana;
+    
+    @NotEmpty(message = "Selecione pelo menos um dia da semana")
+    private List<DiaSemana> diasSemana = new ArrayList<>();
+    
     private Integer capacidadeMaxima;
     private Long educadorId;
     private String educadorNome;
@@ -19,11 +26,11 @@ public class TurmaDTO {
 
     public TurmaDTO() {}
 
-    public TurmaDTO(Long id, String nome, Turno turno, String diasSemana, Integer capacidadeMaxima, Long educadorId, String educadorNome, Long quantidadeAlunos) {
+    public TurmaDTO(Long id, String nome, Turno turno, List<DiaSemana> diasSemana, Integer capacidadeMaxima, Long educadorId, String educadorNome, Long quantidadeAlunos) {
         this.id = id;
         this.nome = nome;
         this.turno = turno;
-        this.diasSemana = diasSemana;
+        this.diasSemana = diasSemana != null ? diasSemana : new ArrayList<>();
         this.capacidadeMaxima = capacidadeMaxima;
         this.educadorId = educadorId;
         this.educadorNome = educadorNome;
@@ -54,12 +61,12 @@ public class TurmaDTO {
         this.turno = turno;
     }
 
-    public String getDiasSemana() {
+    public List<DiaSemana> getDiasSemana() {
         return diasSemana;
     }
 
-    public void setDiasSemana(String diasSemana) {
-        this.diasSemana = diasSemana;
+    public void setDiasSemana(List<DiaSemana> diasSemana) {
+        this.diasSemana = diasSemana != null ? diasSemana : new ArrayList<>();
     }
 
     public Integer getCapacidadeMaxima() {
@@ -102,7 +109,7 @@ public class TurmaDTO {
         private Long id;
         private String nome;
         private Turno turno;
-        private String diasSemana;
+        private List<DiaSemana> diasSemana = new ArrayList<>();
         private Integer capacidadeMaxima;
         private Long educadorId;
         private String educadorNome;
@@ -123,8 +130,8 @@ public class TurmaDTO {
             return this;
         }
 
-        public Builder diasSemana(String diasSemana) {
-            this.diasSemana = diasSemana;
+        public Builder diasSemana(List<DiaSemana> diasSemana) {
+            this.diasSemana = diasSemana != null ? diasSemana : new ArrayList<>();
             return this;
         }
 

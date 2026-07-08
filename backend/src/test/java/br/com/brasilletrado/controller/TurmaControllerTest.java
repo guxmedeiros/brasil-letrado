@@ -1,10 +1,12 @@
 package br.com.brasilletrado.controller;
 
 import br.com.brasilletrado.dto.TurmaDTO;
+import br.com.brasilletrado.model.DiaSemana;
 import br.com.brasilletrado.model.Educador;
 import br.com.brasilletrado.model.Instituicao;
 import br.com.brasilletrado.model.Turma;
 import br.com.brasilletrado.model.Turno;
+import java.util.List;
 import br.com.brasilletrado.repository.EducadorRepository;
 import br.com.brasilletrado.repository.TurmaRepository;
 import br.com.brasilletrado.repository.AlunoRepository;
@@ -84,7 +86,7 @@ public class TurmaControllerTest {
         TurmaDTO dto = TurmaDTO.builder()
                 .nome("Turma A")
                 .turno(Turno.MANHA)
-                .diasSemana("Seg/Qua")
+                .diasSemana(List.of(DiaSemana.SEGUNDA, DiaSemana.QUARTA))
                 .capacidadeMaxima(20)
                 .educadorId(educadorSalvo.getId())
                 .build();

@@ -1,5 +1,9 @@
 package br.com.brasilletrado.model;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Converter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +14,74 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Converter
+class DiaSemanaListConverter implements AttributeConverter<List<DiaSemana>, String> {
+    private static final String DELIMITER = ",";
+
+    // Mapeamento de nomes comuns para os valores do enum
+    private static final java.util.Map<String, DiaSemana> NOME_PARA_ENUM = new java.util.HashMap<>();
+    static {
+        NOME_PARA_ENUM.put("segunda", DiaSemana.SEGUNDA);
+        NOME_PARA_ENUM.put("segunda-feira", DiaSemana.SEGUNDA);
+        NOME_PARA_ENUM.put("terça", DiaSemana.TERCA);
+        NOME_PARA_ENUM.put("terca", DiaSemana.TERCA);
+        NOME_PARA_ENUM.put("terça-feira", DiaSemana.TERCA);
+        NOME_PARA_ENUM.put("quarta", DiaSemana.QUARTA);
+        NOME_PARA_ENUM.put("quarta-feira", DiaSemana.QUARTA);
+        NOME_PARA_ENUM.put("quinta", DiaSemana.QUINTA);
+        NOME_PARA_ENUM.put("quinta-feira", DiaSemana.QUINTA);
+        NOME_PARA_ENUM.put("sexta", DiaSemana.SEXTA);
+        NOME_PARA_ENUM.put("sexta-feira", DiaSemana.SEXTA);
+        NOME_PARA_ENUM.put("sábado", DiaSemana.SABADO);
+        NOME_PARA_ENUM.put("sabado", DiaSemana.SABADO);
+        NOME_PARA_ENUM.put("domingo", DiaSemana.DOMINGO);
+        // Também aceitamos os próprios nomes do enum
+        for (DiaSemana d : DiaSemana.values()) {
+            NOME_PARA_ENUM.put(d.name().toLowerCase(), d);
+        }
+    }
+
+    @Override
+    public String convertToDatabaseColumn(List<DiaSemana> attribute) {
+        if (attribute == null || attribute.isEmpty()) {
+            return "";
+        }
+        return attribute.stream()
+                .map(DiaSemana::name)
+                .collect(Collectors.joining(DELIMITER));
+    }
+
+    @Override
+    public List<DiaSemana> convertToEntityAttribute(String dbData) {
+        if (dbData == null || dbData.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(dbData.split(DELIMITER))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                    String chave = s.toLowerCase().trim();
+                    DiaSemana dia = NOME_PARA_ENUM.get(chave);
+                    if (dia == null) {
+                        // Tenta procurar por nome exato (case-insensitive)
+                        for (DiaSemana d : DiaSemana.values()) {
+                            if (d.name().equalsIgnoreCase(s)) {
+                                return d;
+                            }
+                        }
+                        return null; // Ignora valores desconhecidos
+                    }
+                    return dia;
+                })
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+}
 
 @Entity
 @Table(name = "turma")
@@ -24,7 +96,10 @@ public class Turma {
     @Enumerated(EnumType.STRING)
     private Turno turno;
 
-    private String diasSemana;
+    @Convert(converter = DiaSemanaListConverter.class)
+    @Column(name = "dias_semana")
+    private List<DiaSemana> diasSemana = new ArrayList<>();
+
     private Integer capacidadeMaxima;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,11 +112,11 @@ public class Turma {
 
     public Turma() {}
 
-    public Turma(Long id, String nome, Turno turno, String diasSemana, Integer capacidadeMaxima, Educador educador, Instituicao instituicao) {
+    public Turma(Long id, String nome, Turno turno, List<DiaSemana> diasSemana, Integer capacidadeMaxima, Educador educador, Instituicao instituicao) {
         this.id = id;
         this.nome = nome;
         this.turno = turno;
-        this.diasSemana = diasSemana;
+        this.diasSemana = diasSemana != null ? diasSemana : new ArrayList<>();
         this.capacidadeMaxima = capacidadeMaxima;
         this.educador = educador;
         this.instituicao = instituicao;
@@ -71,12 +146,12 @@ public class Turma {
         this.turno = turno;
     }
 
-    public String getDiasSemana() {
+    public List<DiaSemana> getDiasSemana() {
         return diasSemana;
     }
 
-    public void setDiasSemana(String diasSemana) {
-        this.diasSemana = diasSemana;
+    public void setDiasSemana(List<DiaSemana> diasSemana) {
+        this.diasSemana = diasSemana != null ? diasSemana : new ArrayList<>();
     }
 
     public Integer getCapacidadeMaxima() {
@@ -111,7 +186,7 @@ public class Turma {
         private Long id;
         private String nome;
         private Turno turno;
-        private String diasSemana;
+        private List<DiaSemana> diasSemana = new ArrayList<>();
         private Integer capacidadeMaxima;
         private Educador educador;
         private Instituicao instituicao;
@@ -131,8 +206,8 @@ public class Turma {
             return this;
         }
 
-        public Builder diasSemana(String diasSemana) {
-            this.diasSemana = diasSemana;
+        public Builder diasSemana(List<DiaSemana> diasSemana) {
+            this.diasSemana = diasSemana != null ? diasSemana : new ArrayList<>();
             return this;
         }
 
