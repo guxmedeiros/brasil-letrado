@@ -78,6 +78,7 @@
   font-size: 0.82rem;
   text-decoration: none;
 }
+.btn-primary-custom:hover { background: var(--navy); color: white; } 
 
 .sidebar-content-wrapper {
   display: flex;
@@ -213,6 +214,7 @@
   border-radius: 8px;
   background: rgba(255,255,255,0.14);
   border: 1px solid rgba(255,255,255,0.25);
+  text-decoration: none;
   color: white;
   font-size: 0.82rem;
   font-weight: 600;
