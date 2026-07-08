@@ -8,11 +8,14 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { TurnoTag } from '../components/StatusTag';
 import { turmaService } from '../services/turmaService';
 import { educadorService } from '../services/educadorService';
 import { required, minLength, maxLength, minNumber, maxNumber, validate, trim } from '../utils/validators';
+import OcupacaoBar from '../components/OcupacaoBar';
+import SearchBar from '../components/SearchBar';
+import LoadingState from '../components/LoadingState';
+import FormField from '../components/FormField';
 
 const TURNO_OPTIONS = [
   { label: '☀️  Manhã', value: 'MANHA' },
@@ -21,21 +24,6 @@ const TURNO_OPTIONS = [
 ];
 
 const EMPTY_FORM = { nome: '', turno: null, diasSemana: '', capacidadeMaxima: null, educadorId: null };
-
-function OcupacaoBar({ quantidade, capacidade }) {
-  if (!capacidade || capacidade === 0) return <span style={{ fontSize: '0.85rem' }}>{quantidade} alunos</span>;
-  const pct = Math.min((quantidade / capacidade) * 100, 100);
-  const cls = pct >= 100 ? 'full' : pct >= 80 ? 'warning' : '';
-  return (
-    <div className="ocupacao-bar">
-      <span style={{ fontSize: '0.82rem', minWidth: '60px' }}>{quantidade}/{capacidade}</span>
-      <div className="ocupacao-track">
-        <div className={`ocupacao-fill ${cls}`} style={{ width: `${pct}%` }} />
-      </div>
-      <span style={{ fontSize: '0.75rem', minWidth: '32px', color: '#718096' }}>{Math.round(pct)}%</span>
-    </div>
-  );
-}
 
 export default function TurmasPage() {
   const [turmas, setTurmas] = useState([]);
@@ -194,16 +182,14 @@ export default function TurmasPage() {
         <Button id="nova-turma-btn" label="Nova Turma" icon="pi pi-plus" onClick={abrirNovo} />
       </div>
 
-      <div className="p-inputgroup" style={{ maxWidth: 340, marginBottom: '1rem' }}>
-        <span className="p-inputgroup-addon"><i className="pi pi-search" /></span>
-        <InputText placeholder="Buscar turma..." value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} />
-      </div>
+      <SearchBar
+        placeholder="Buscar turma..."
+        value={globalFilter}
+        onChange={setGlobalFilter}
+      />
 
       {loading ? (
-        <div className="loading-container">
-          <ProgressSpinner style={{ width: 50, height: 50 }} />
-          <span>Carregando turmas…</span>
-        </div>
+        <LoadingState message="Carregando turmas…" />
       ) : (
         <DataTable
           value={turmas}
@@ -236,29 +222,57 @@ export default function TurmasPage() {
         footer={dialogFooter}
       >
         <div className="form-grid">
-          <div className="field">
-            <label htmlFor="turma-nome">Nome *</label>
-            <InputText id="turma-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} placeholder="Nome da turma" className={errors.nome ? 'p-invalid' : ''} autoFocus />
-            {errors.nome && <small className="p-error">{errors.nome}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="turma-turno">Turno</label>
-            <Dropdown id="turma-turno" value={form.turno} options={TURNO_OPTIONS} onChange={e => onChange('turno', e.value)} placeholder="Selecione o turno" />
-          </div>
-          <div className="field">
-            <label htmlFor="turma-dias">Dias da Semana</label>
-            <InputText id="turma-dias" value={form.diasSemana} onChange={e => onChange('diasSemana', e.target.value)} placeholder="Ex: Segunda, Quarta" className={errors.diasSemana ? 'p-invalid' : ''} />
-            {errors.diasSemana && <small className="p-error">{errors.diasSemana}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="turma-cap">Capacidade Máxima</label>
-            <InputNumber id="turma-cap" value={form.capacidadeMaxima} onValueChange={e => onChange('capacidadeMaxima', e.value)} min={1} max={100} showButtons className={errors.capacidadeMaxima ? 'p-invalid' : ''} />
-            {errors.capacidadeMaxima && <small className="p-error">{errors.capacidadeMaxima}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="turma-educador">Educador</label>
-            <Dropdown id="turma-educador" value={form.educadorId} options={educadores} onChange={e => onChange('educadorId', e.value)} placeholder="Selecione o educador" filter filterPlaceholder="Buscar educador..." showClear />
-          </div>
+          <FormField label="Nome *" htmlFor="turma-nome" error={errors.nome}>
+            <InputText
+              id="turma-nome"
+              value={form.nome}
+              onChange={e => onChange('nome', e.target.value)}
+              placeholder="Nome da turma"
+              className={errors.nome ? 'p-invalid' : ''}
+              autoFocus
+            />
+          </FormField>
+          <FormField label="Turno" htmlFor="turma-turno">
+            <Dropdown
+              id="turma-turno"
+              value={form.turno}
+              options={TURNO_OPTIONS}
+              onChange={e => onChange('turno', e.value)}
+              placeholder="Selecione o turno"
+            />
+          </FormField>
+          <FormField label="Dias da Semana" htmlFor="turma-dias" error={errors.diasSemana}>
+            <InputText
+              id="turma-dias"
+              value={form.diasSemana}
+              onChange={e => onChange('diasSemana', e.target.value)}
+              placeholder="Ex: Segunda, Quarta"
+              className={errors.diasSemana ? 'p-invalid' : ''}
+            />
+          </FormField>
+          <FormField label="Capacidade Máxima" htmlFor="turma-cap" error={errors.capacidadeMaxima}>
+            <InputNumber
+              id="turma-cap"
+              value={form.capacidadeMaxima}
+              onValueChange={e => onChange('capacidadeMaxima', e.value)}
+              min={1}
+              max={100}
+              showButtons
+              className={errors.capacidadeMaxima ? 'p-invalid' : ''}
+            />
+          </FormField>
+          <FormField label="Educador" htmlFor="turma-educador">
+            <Dropdown
+              id="turma-educador"
+              value={form.educadorId}
+              options={educadores}
+              onChange={e => onChange('educadorId', e.value)}
+              placeholder="Selecione o educador"
+              filter
+              filterPlaceholder="Buscar educador..."
+              showClear
+            />
+          </FormField>
         </div>
       </Dialog>
     </div>

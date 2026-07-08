@@ -4,82 +4,15 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { educadorService } from '../services/educadorService';
 import { required, minLength, maxLength, email, telefone, url, validate, trim } from '../utils/validators';
+import EducadorCard from '../components/EducadorCard';
+import SearchBar from '../components/SearchBar';
+import LoadingState from '../components/LoadingState';
+import EmptyState from '../components/EmptyState';
+import FormField from '../components/FormField';
 
 const EMPTY_FORM = { nome: '', email: '', telefone: '', formacao: '', fotoUrl: '' };
-
-function EducadorCard({ educador, onEditar, onExcluir }) {
-  const initials = educador.nome
-    ? educador.nome.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()
-    : '?';
-
-  return (
-    <div className="edu-card">
-      <div className="edu-card-header">
-        {educador.fotoUrl ? (
-          <img
-            src={educador.fotoUrl}
-            alt={`Foto de ${educador.nome}`}
-            className="edu-avatar"
-            onError={e => { e.target.style.display = 'none'; }}
-          />
-        ) : (
-          <div className="edu-avatar-placeholder" aria-label={`Iniciais de ${educador.nome}`}>
-            {initials}
-          </div>
-        )}
-        <p className="edu-card-name">{educador.nome}</p>
-      </div>
-
-      <div className="edu-card-body">
-        {educador.formacao && (
-          <div className="edu-info-row">
-            <i className="pi pi-book" />
-            <span>{educador.formacao}</span>
-          </div>
-        )}
-        {educador.email && (
-          <div className="edu-info-row">
-            <i className="pi pi-envelope" />
-            <span>{educador.email}</span>
-          </div>
-        )}
-        {educador.telefone && (
-          <div className="edu-info-row">
-            <i className="pi pi-phone" />
-            <span>{educador.telefone}</span>
-          </div>
-        )}
-        {!educador.formacao && !educador.email && !educador.telefone && (
-          <div className="edu-info-row" style={{ color: '#c0c0c0', fontStyle: 'italic' }}>
-            Sem informações adicionais
-          </div>
-        )}
-      </div>
-
-      <div className="edu-card-actions">
-        <Button
-          id={`edit-educador-${educador.id}`}
-          icon="pi pi-pencil"
-          rounded text severity="info"
-          onClick={() => onEditar(educador)}
-          tooltip="Editar"
-          tooltipOptions={{ position: 'top' }}
-        />
-        <Button
-          id={`delete-educador-${educador.id}`}
-          icon="pi pi-trash"
-          rounded text severity="danger"
-          onClick={() => onExcluir(educador)}
-          tooltip="Excluir"
-          tooltipOptions={{ position: 'top' }}
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function EducadoresPage() {
   const [educadores, setEducadores] = useState([]);
@@ -246,27 +179,21 @@ export default function EducadoresPage() {
         <Button id="novo-educador-btn" label="Novo Educador" icon="pi pi-plus" onClick={abrirNovo} />
       </div>
 
-      <div className="p-inputgroup" style={{ maxWidth: 340, marginBottom: '1rem' }}>
-        <span className="p-inputgroup-addon"><i className="pi pi-search" /></span>
-        <InputText
-          placeholder="Buscar educador..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-      </div>
+      <SearchBar
+        placeholder="Buscar educador..."
+        value={search}
+        onChange={setSearch}
+      />
 
       {loading ? (
-        <div className="loading-container">
-          <ProgressSpinner style={{ width: 50, height: 50 }} />
-          <span>Carregando educadores…</span>
-        </div>
+        <LoadingState message="Carregando educadores…" />
       ) : (
         <div className="cards-grid">
           {educadoresFiltrados.length === 0 ? (
-            <div className="edu-empty">
-              <i className="pi pi-graduation-cap" />
-              {search ? 'Nenhum educador encontrado para esta busca.' : 'Nenhum educador cadastrado ainda.'}
-            </div>
+            <EmptyState
+              icon="pi pi-graduation-cap"
+              message={search ? 'Nenhum educador encontrado para esta busca.' : 'Nenhum educador cadastrado ainda.'}
+            />
           ) : (
             educadoresFiltrados.map(e => (
               <EducadorCard
@@ -290,30 +217,51 @@ export default function EducadoresPage() {
         footer={dialogFooter}
       >
         <div className="form-grid">
-          <div className="field">
-            <label htmlFor="edu-nome">Nome *</label>
-            <InputText id="edu-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} placeholder="Nome completo do educador" className={errors.nome ? 'p-invalid' : ''} autoFocus />
-            {errors.nome && <small className="p-error">{errors.nome}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="edu-email">E-mail *</label>
-            <InputText id="edu-email" value={form.email} onChange={e => onChange('email', e.target.value)} placeholder="educador@instituicao.org" className={errors.email ? 'p-invalid' : ''} />
-            {errors.email && <small className="p-error">{errors.email}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="edu-telefone">Telefone *</label>
-            <InputText id="edu-telefone" value={form.telefone} onChange={e => onChange('telefone', e.target.value)} placeholder="(11) 99999-9999" className={errors.telefone ? 'p-invalid' : ''} />
-            {errors.telefone && <small className="p-error">{errors.telefone}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="edu-formacao">Formação *</label>
-            <InputText id="edu-formacao" value={form.formacao} onChange={e => onChange('formacao', e.target.value)} placeholder="Licenciatura em Letras" className={errors.formacao ? 'p-invalid' : ''} />
-            {errors.formacao && <small className="p-error">{errors.formacao}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="edu-fotourl">URL da Foto (opcional)</label>
-            <InputText id="edu-fotourl" value={form.fotoUrl} onChange={e => onChange('fotoUrl', e.target.value)} placeholder="https://..." className={errors.fotoUrl ? 'p-invalid' : ''} />
-            {errors.fotoUrl && <small className="p-error">{errors.fotoUrl}</small>}
+          <FormField label="Nome *" htmlFor="edu-nome" error={errors.nome}>
+            <InputText
+              id="edu-nome"
+              value={form.nome}
+              onChange={e => onChange('nome', e.target.value)}
+              placeholder="Nome completo do educador"
+              className={errors.nome ? 'p-invalid' : ''}
+              autoFocus
+            />
+          </FormField>
+          <FormField label="E-mail *" htmlFor="edu-email" error={errors.email}>
+            <InputText
+              id="edu-email"
+              value={form.email}
+              onChange={e => onChange('email', e.target.value)}
+              placeholder="educador@instituicao.org"
+              className={errors.email ? 'p-invalid' : ''}
+            />
+          </FormField>
+          <FormField label="Telefone *" htmlFor="edu-telefone" error={errors.telefone}>
+            <InputText
+              id="edu-telefone"
+              value={form.telefone}
+              onChange={e => onChange('telefone', e.target.value)}
+              placeholder="(11) 99999-9999"
+              className={errors.telefone ? 'p-invalid' : ''}
+            />
+          </FormField>
+          <FormField label="Formação *" htmlFor="edu-formacao" error={errors.formacao}>
+            <InputText
+              id="edu-formacao"
+              value={form.formacao}
+              onChange={e => onChange('formacao', e.target.value)}
+              placeholder="Licenciatura em Letras"
+              className={errors.formacao ? 'p-invalid' : ''}
+            />
+          </FormField>
+          <FormField label="URL da Foto (opcional)" htmlFor="edu-fotourl" error={errors.fotoUrl}>
+            <InputText
+              id="edu-fotourl"
+              value={form.fotoUrl}
+              onChange={e => onChange('fotoUrl', e.target.value)}
+              placeholder="https://..."
+              className={errors.fotoUrl ? 'p-invalid' : ''}
+            />
             {form.fotoUrl && (
               <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <img
@@ -325,7 +273,7 @@ export default function EducadoresPage() {
                 <small style={{ color: '#718096' }}>Pré-visualização</small>
               </div>
             )}
-          </div>
+          </FormField>
         </div>
       </Dialog>
     </div>

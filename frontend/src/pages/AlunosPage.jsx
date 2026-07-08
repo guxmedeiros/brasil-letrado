@@ -8,11 +8,13 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { NivelTag } from '../components/StatusTag';
 import { alunoService } from '../services/alunoService';
 import { turmaService } from '../services/turmaService';
 import { required, minLength, maxLength, telefone, validate, trim } from '../utils/validators';
+import SearchBar from '../components/SearchBar';
+import LoadingState from '../components/LoadingState';
+import FormField from '../components/FormField';
 
 const NIVEL_OPTIONS = [
   { label: '⚪ Iniciante', value: 'INICIANTE' },
@@ -189,16 +191,14 @@ export default function AlunosPage() {
         <Button id="novo-aluno-btn" label="Novo Aluno" icon="pi pi-plus" onClick={abrirNovo} />
       </div>
 
-      <div className="p-inputgroup" style={{ maxWidth: 340, marginBottom: '1rem' }}>
-        <span className="p-inputgroup-addon"><i className="pi pi-search" /></span>
-        <InputText placeholder="Buscar aluno..." value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} />
-      </div>
+      <SearchBar
+        placeholder="Buscar aluno..."
+        value={globalFilter}
+        onChange={setGlobalFilter}
+      />
 
       {loading ? (
-        <div className="loading-container">
-          <ProgressSpinner style={{ width: 50, height: 50 }} />
-          <span>Carregando alunos…</span>
-        </div>
+        <LoadingState message="Carregando alunos…" />
       ) : (
         <DataTable
           value={alunos}
@@ -231,35 +231,57 @@ export default function AlunosPage() {
         footer={dialogFooter}
       >
         <div className="form-grid">
-          <div className="field">
-            <label htmlFor="aluno-nome">Nome *</label>
-            <InputText id="aluno-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} placeholder="Nome completo do aluno" className={errors.nome ? 'p-invalid' : ''} autoFocus />
-            {errors.nome && <small className="p-error">{errors.nome}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="aluno-nasc">Data de Nascimento</label>
-            <Calendar id="aluno-nasc" value={form.dataNascimento} onChange={e => onChange('dataNascimento', e.value)} dateFormat="dd/mm/yy" showIcon yearNavigator yearRange="1930:2010" placeholder="dd/mm/aaaa" />
-          </div>
-          <div className="field">
-            <label htmlFor="aluno-tel">Telefone</label>
-            <InputText id="aluno-tel" value={form.telefone} onChange={e => onChange('telefone', e.target.value)} placeholder="(11) 99999-9999" className={errors.telefone ? 'p-invalid' : ''} />
-            {errors.telefone && <small className="p-error">{errors.telefone}</small>}
-          </div>
-          <div className="field">
-            <label htmlFor="aluno-nivel">Nível de Alfabetização</label>
-            <Dropdown id="aluno-nivel" value={form.nivelAlfabetizacao} options={NIVEL_OPTIONS} onChange={e => onChange('nivelAlfabetizacao', e.value)} placeholder="Selecione o nível" showClear />
-          </div>
-          <div className="field">
-            <label htmlFor="aluno-turma">Turma</label>
-            <Dropdown 
-              id="aluno-turma" 
-              value={form.turmaId} 
-              options={turmas} 
-              onChange={e => onChange('turmaId', e.value)} 
-              placeholder="Selecione a turma" 
-              filter 
-              filterPlaceholder="Buscar turma..." 
-              showClear 
+          <FormField label="Nome *" htmlFor="aluno-nome" error={errors.nome}>
+            <InputText
+              id="aluno-nome"
+              value={form.nome}
+              onChange={e => onChange('nome', e.target.value)}
+              placeholder="Nome completo do aluno"
+              className={errors.nome ? 'p-invalid' : ''}
+              autoFocus
+            />
+          </FormField>
+          <FormField label="Data de Nascimento" htmlFor="aluno-nasc">
+            <Calendar
+              id="aluno-nasc"
+              value={form.dataNascimento}
+              onChange={e => onChange('dataNascimento', e.value)}
+              dateFormat="dd/mm/yy"
+              showIcon
+              yearNavigator
+              yearRange="1930:2010"
+              placeholder="dd/mm/aaaa"
+            />
+          </FormField>
+          <FormField label="Telefone" htmlFor="aluno-tel" error={errors.telefone}>
+            <InputText
+              id="aluno-tel"
+              value={form.telefone}
+              onChange={e => onChange('telefone', e.target.value)}
+              placeholder="(11) 99999-9999"
+              className={errors.telefone ? 'p-invalid' : ''}
+            />
+          </FormField>
+          <FormField label="Nível de Alfabetização" htmlFor="aluno-nivel">
+            <Dropdown
+              id="aluno-nivel"
+              value={form.nivelAlfabetizacao}
+              options={NIVEL_OPTIONS}
+              onChange={e => onChange('nivelAlfabetizacao', e.value)}
+              placeholder="Selecione o nível"
+              showClear
+            />
+          </FormField>
+          <FormField label="Turma" htmlFor="aluno-turma">
+            <Dropdown
+              id="aluno-turma"
+              value={form.turmaId}
+              options={turmas}
+              onChange={e => onChange('turmaId', e.value)}
+              placeholder="Selecione a turma"
+              filter
+              filterPlaceholder="Buscar turma..."
+              showClear
               itemTemplate={(option) => {
                 const turma = turmas.find(t => t.value === option.value);
                 const isFull = turma && turma.quantidadeAlunos >= turma.capacidadeMaxima;
@@ -275,7 +297,7 @@ export default function AlunosPage() {
                 return turma && turma.quantidadeAlunos >= turma.capacidadeMaxima;
               }}
             />
-          </div>
+          </FormField>
         </div>
       </Dialog>
     </div>
