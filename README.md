@@ -2,8 +2,6 @@
 
 O Brasil Letrado é uma plataforma web desenvolvida para apoiar instituições, ONGs e projetos sociais que atuam na alfabetização de jovens e adultos. A aplicação centraliza o gerenciamento de educadores, turmas e alunos, oferecendo indicadores e ferramentas que substituem controles manuais por um fluxo digital organizado.
 
-Este é o repositório principal do projeto **Brasil Letrado**, contendo o código fonte completo do Back-end (Spring Boot) e do Front-end (React).
-
 ---
 
 ## Seção 1 - Sobre o projeto
@@ -22,7 +20,7 @@ Este é o repositório principal do projeto **Brasil Letrado**, contendo o códi
 
 ## Seção 2 - Como rodar
 
-### Como rodar o back-end
+### Como rodar o back-end (Spring Boot)
 
 1. Abra um terminal na pasta `backend/`.
 2. Certifique-se de ter o JDK 21 ou superior instalado.
@@ -42,7 +40,7 @@ Este é o repositório principal do projeto **Brasil Letrado**, contendo o códi
 * Email: `contato@sementesdosaber.org`
 * Senha: `123456`
 
-### Como rodar o front-end
+### Como rodar o front-end (React)
 
 1. Abra outro terminal na pasta `frontend/`.
 2. Instale as dependências na primeira execução:

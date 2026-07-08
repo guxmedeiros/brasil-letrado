@@ -1,6 +1,101 @@
 # ⚛️ Brasil Letrado — Front-End Web App
 
-Esta é a documentação do mapeamento de telas da aplicação cliente (SPA React) e os respectivos endpoints consumidos por cada uma delas.
+Esta é a documentação do front-end da aplicação Brasil Letrado, com instruções de instalação, bibliotecas utilizadas e detalhes dos componentes reutilizáveis.
+
+---
+
+## 📚 Bibliotecas Utilizadas
+
+### Dependências Principais
+- **React 19**: Biblioteca para construção de interfaces de usuário
+- **React DOM**: Renderização do React no navegador
+- **React Router DOM**: Navegação entre as páginas da aplicação
+- **Axios**: Cliente HTTP para consumir a API REST
+- **PrimeReact**: Biblioteca de componentes de interface de usuário (UI) com design profissional
+- **PrimeIcons**: Ícones da biblioteca PrimeReact
+- **PrimeFlex**: Biblioteca de utilitários CSS para estilização responsiva
+
+### Ferramentas de Desenvolvimento
+- **Vite**: Ferramenta de build e servidor de desenvolvimento rápido
+- **Oxlint**: Linter para JavaScript/TypeScript
+- **@vitejs/plugin-react**: Plugin do Vite para React
+- **@types/react** e **@types/react-dom**: Tipagens TypeScript para React
+
+---
+
+## 🚀 Como Rodar o Projeto
+
+### Pré-requisitos
+- Node.js instalado na máquina (versão recente recomendada)
+- npm (incluso com o Node.js)
+
+### Passos para Executar
+1. Abra o terminal na pasta `frontend/`
+2. Instale as dependências na primeira execução:
+   ```bash
+   npm install
+   ```
+3. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+4. A aplicação web abrirá no seu navegador em `http://localhost:5173`
+
+### Comandos Úteis
+- `npm run build`: Cria uma versão de produção do projeto
+- `npm run lint`: Executa o linter para verificar o código
+- `npm run preview`: Pré-visualiza a versão de produção
+
+---
+
+## 🧩 Componentes Reutilizáveis
+
+Os componentes reutilizáveis estão na pasta `src/components/` e são usados em várias páginas da aplicação.
+
+### 1. `BackToTop`
+- **Arquivos:** `BackToTop.jsx`, `BackToTop.css`
+- **Descrição:** Botão que aparece quando a página é rolada para baixo, permitindo retornar ao topo com um clique.
+- **Funcionalidades:** Animação suave, oculto por padrão, aparece ao rolar a página.
+
+### 2. `EducadorCard`
+- **Arquivos:** `EducadorCard.jsx`, `EducadorCard.css`
+- **Descrição:** Componente que exibe as informações de um educador em um card visualmente atraente.
+- **Conteúdo:** Foto do educador (ou avatar padrão), nome, e-mail, telefone, formação e botões de editar/excluir.
+
+### 3. `EmptyState`
+- **Arquivo:** `EmptyState.jsx`
+- **Descrição:** Componente que exibe uma mensagem amigável quando não há dados para exibir (ex: nenhum educador cadastrado).
+
+### 4. `Footer`
+- **Arquivos:** `Footer.jsx`, `Footer.css`
+- **Descrição:** Rodapé da aplicação, exibindo a logo, subtítulo "Alfabetização de adultos" e links centralizados.
+
+### 5. `FormField`
+- **Arquivo:** `FormField.jsx`
+- **Descrição:** Componente wrapper para campos de formulário, incluindo rótulo (label), campo de entrada e mensagem de erro.
+- **Funcionalidades:** Garante consistência visual em todos os formulários da aplicação.
+
+### 6. `LoadingState`
+- **Arquivos:** `LoadingState.jsx`, `LoadingState.css`
+- **Descrição:** Componente que exibe um spinner e mensagem de carregamento enquanto os dados estão sendo buscados da API.
+
+### 7. `Navbar`
+- **Arquivos:** `Navbar.jsx`, `Navbar.css`
+- **Descrição:** Barra de navegação principal da aplicação, com menu hambúrguer para dispositivos móveis.
+- **Funcionalidades:** Navegação entre páginas, exibição do nome da instituição logada, botão de logout.
+
+### 8. `OcupacaoBar`
+- **Arquivos:** `OcupacaoBar.jsx`, `OcupacaoBar.css`
+- **Descrição:** Barra de progresso visual que indica a ocupação de uma turma, com mudança de cor conforme a lotação (verde para livre, amarelo para aviso, vermelho para cheio).
+
+### 9. `SearchBar`
+- **Arquivos:** `SearchBar.jsx`, `SearchBar.css`
+- **Descrição:** Barra de busca reutilizável, com ícone e placeholder personalizável.
+- **Funcionalidades:** Filtra dados em tabelas (alunos, educadores, turmas).
+
+### 10. `StatusTag` (com `TurnoTag`)
+- **Arquivos:** `StatusTag.jsx`, `StatusTag.css`
+- **Descrição:** Tags coloridas para exibir status, como o turno da turma (manhã, tarde, noite).
 
 ---
 
