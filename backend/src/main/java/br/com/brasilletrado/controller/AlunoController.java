@@ -63,6 +63,12 @@ public class AlunoController {
         if (dto.getTurmaId() != null) {
             turma = turmaRepository.findByIdAndInstituicaoId(dto.getTurmaId(), inst.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com o ID: " + dto.getTurmaId()));
+            
+            // Validação de capacidade máxima
+            long qtdAlunosNaTurma = alunoRepository.countByTurmaId(turma.getId());
+            if (turma.getCapacidadeMaxima() != null && qtdAlunosNaTurma >= turma.getCapacidadeMaxima()) {
+                throw new IllegalArgumentException("A turma " + turma.getNome() + " atingiu sua capacidade máxima de " + turma.getCapacidadeMaxima() + " alunos.");
+            }
         }
 
         Aluno aluno = alunoMapper.toEntity(dto, turma);
@@ -81,6 +87,15 @@ public class AlunoController {
         if (dto.getTurmaId() != null) {
             turma = turmaRepository.findByIdAndInstituicaoId(dto.getTurmaId(), inst.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Turma não encontrada com o ID: " + dto.getTurmaId()));
+            
+            // Validação de capacidade máxima só se a turma for diferente da atual
+            Long turmaAtualId = aluno.getTurma() != null ? aluno.getTurma().getId() : null;
+            if (!dto.getTurmaId().equals(turmaAtualId)) {
+                long qtdAlunosNaTurma = alunoRepository.countByTurmaId(turma.getId());
+                if (turma.getCapacidadeMaxima() != null && qtdAlunosNaTurma >= turma.getCapacidadeMaxima()) {
+                    throw new IllegalArgumentException("A turma " + turma.getNome() + " atingiu sua capacidade máxima de " + turma.getCapacidadeMaxima() + " alunos.");
+                }
+            }
         }
 
         aluno.setNome(dto.getNome());

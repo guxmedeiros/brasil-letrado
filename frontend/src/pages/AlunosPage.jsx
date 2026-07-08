@@ -41,7 +41,11 @@ export default function AlunosPage() {
     try {
       const [a, t] = await Promise.all([alunoService.listar(), turmaService.listar()]);
       setAlunos(a);
-      setTurmas(t.map(t => ({ label: t.nome, value: t.id })));
+      setTurmas(t.map(turma => ({ 
+        label: turma.nome, 
+        value: turma.id, 
+        ...turma 
+      })));
     } catch {
       toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar alunos.', life: 3000 });
     } finally {
@@ -247,7 +251,30 @@ export default function AlunosPage() {
           </div>
           <div className="field">
             <label htmlFor="aluno-turma">Turma</label>
-            <Dropdown id="aluno-turma" value={form.turmaId} options={turmas} onChange={e => onChange('turmaId', e.value)} placeholder="Selecione a turma" filter filterPlaceholder="Buscar turma..." showClear />
+            <Dropdown 
+              id="aluno-turma" 
+              value={form.turmaId} 
+              options={turmas} 
+              onChange={e => onChange('turmaId', e.value)} 
+              placeholder="Selecione a turma" 
+              filter 
+              filterPlaceholder="Buscar turma..." 
+              showClear 
+              itemTemplate={(option) => {
+                const turma = turmas.find(t => t.value === option.value);
+                const isFull = turma && turma.quantidadeAlunos >= turma.capacidadeMaxima;
+                return (
+                  <div style={{ opacity: isFull ? 0.6 : 1 }}>
+                    {option.label}
+                    {isFull && <span style={{ color: '#c0392b', marginLeft: '0.5rem' }}>(Lotada)</span>}
+                  </div>
+                );
+              }}
+              disabled={(option) => {
+                const turma = turmas.find(t => t.value === option.value);
+                return turma && turma.quantidadeAlunos >= turma.capacidadeMaxima;
+              }}
+            />
           </div>
         </div>
       </Dialog>
