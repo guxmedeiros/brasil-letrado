@@ -1,5 +1,7 @@
 # 📚 Brasil Letrado
 
+O Brasil Letrado é uma plataforma web desenvolvida para apoiar instituições, ONGs e projetos sociais que atuam na alfabetização de jovens e adultos. A aplicação centraliza o gerenciamento de educadores, turmas e alunos, oferecendo indicadores e ferramentas que substituem controles manuais por um fluxo digital organizado.
+
 Este é o repositório principal do projeto **Brasil Letrado**, contendo o código fonte completo do Back-end (Spring Boot) e do Front-end (React).
 
 ---
