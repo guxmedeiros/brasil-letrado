@@ -6,6 +6,7 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { educadorService } from '../services/educadorService';
+import { required, minLength, maxLength, email, telefone, url, validate, trim } from '../utils/validators';
 
 const EMPTY_FORM = { nome: '', email: '', telefone: '', formacao: '', fotoUrl: '' };
 
@@ -143,7 +144,30 @@ export default function EducadoresPage() {
 
   const validar = () => {
     const errs = {};
-    if (!form.nome.trim()) errs.nome = 'O nome é obrigatório';
+    errs.nome = validate(form.nome, [
+      (v) => required(v, 'O nome é obrigatório'),
+      (v) => minLength(3)(v, 'Nome deve ter pelo menos 3 caracteres'),
+      (v) => maxLength(100)(v, 'Nome deve ter no máximo 100 caracteres')
+    ]);
+    errs.email = validate(form.email, [
+      (v) => required(v, 'O e-mail é obrigatório'),
+      (v) => email(v)
+    ]);
+    errs.telefone = validate(form.telefone, [
+      (v) => required(v, 'O telefone é obrigatório'),
+      (v) => telefone(v)
+    ]);
+    errs.formacao = validate(form.formacao, [
+      (v) => required(v, 'A formação é obrigatória'),
+      (v) => maxLength(100)(v, 'Formação deve ter no máximo 100 caracteres')
+    ]);
+    errs.fotoUrl = validate(form.fotoUrl, [
+      (v) => url(v, 'URL da foto inválida')
+    ]);
+    // Remove erros nulos
+    Object.keys(errs).forEach(key => {
+      if (!errs[key]) delete errs[key];
+    });
     return errs;
   };
 
@@ -152,11 +176,18 @@ export default function EducadoresPage() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setSaving(true);
     try {
+      const payload = {
+        nome: trim(form.nome),
+        email: trim(form.email),
+        telefone: trim(form.telefone),
+        formacao: trim(form.formacao),
+        fotoUrl: trim(form.fotoUrl)
+      };
       if (editando) {
-        await educadorService.atualizar(editando.id, form);
+        await educadorService.atualizar(editando.id, payload);
         toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Educador atualizado!', life: 3000 });
       } else {
-        await educadorService.cadastrar(form);
+        await educadorService.cadastrar(payload);
         toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Educador cadastrado!', life: 3000 });
       }
       fecharDialog();
@@ -261,24 +292,28 @@ export default function EducadoresPage() {
         <div className="form-grid">
           <div className="field">
             <label htmlFor="edu-nome">Nome *</label>
-            <InputText id="edu-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} className={errors.nome ? 'p-invalid' : ''} autoFocus />
+            <InputText id="edu-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} placeholder="Nome completo do educador" className={errors.nome ? 'p-invalid' : ''} autoFocus />
             {errors.nome && <small className="p-error">{errors.nome}</small>}
           </div>
           <div className="field">
-            <label htmlFor="edu-email">E-mail</label>
-            <InputText id="edu-email" value={form.email} onChange={e => onChange('email', e.target.value)} />
+            <label htmlFor="edu-email">E-mail *</label>
+            <InputText id="edu-email" value={form.email} onChange={e => onChange('email', e.target.value)} placeholder="educador@instituicao.org" className={errors.email ? 'p-invalid' : ''} />
+            {errors.email && <small className="p-error">{errors.email}</small>}
           </div>
           <div className="field">
-            <label htmlFor="edu-telefone">Telefone</label>
-            <InputText id="edu-telefone" value={form.telefone} onChange={e => onChange('telefone', e.target.value)} />
+            <label htmlFor="edu-telefone">Telefone *</label>
+            <InputText id="edu-telefone" value={form.telefone} onChange={e => onChange('telefone', e.target.value)} placeholder="(11) 99999-9999" className={errors.telefone ? 'p-invalid' : ''} />
+            {errors.telefone && <small className="p-error">{errors.telefone}</small>}
           </div>
           <div className="field">
-            <label htmlFor="edu-formacao">Formação</label>
-            <InputText id="edu-formacao" value={form.formacao} onChange={e => onChange('formacao', e.target.value)} />
+            <label htmlFor="edu-formacao">Formação *</label>
+            <InputText id="edu-formacao" value={form.formacao} onChange={e => onChange('formacao', e.target.value)} placeholder="Licenciatura em Letras" className={errors.formacao ? 'p-invalid' : ''} />
+            {errors.formacao && <small className="p-error">{errors.formacao}</small>}
           </div>
           <div className="field">
             <label htmlFor="edu-fotourl">URL da Foto (opcional)</label>
-            <InputText id="edu-fotourl" value={form.fotoUrl} onChange={e => onChange('fotoUrl', e.target.value)} placeholder="https://..." />
+            <InputText id="edu-fotourl" value={form.fotoUrl} onChange={e => onChange('fotoUrl', e.target.value)} placeholder="https://..." className={errors.fotoUrl ? 'p-invalid' : ''} />
+            {errors.fotoUrl && <small className="p-error">{errors.fotoUrl}</small>}
             {form.fotoUrl && (
               <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <img

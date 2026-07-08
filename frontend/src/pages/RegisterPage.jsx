@@ -5,6 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { required, email, minLength, cnpj, validate } from '../utils/validators';
 import logo from '../assets/logo.svg';
 
 const EMPTY_FORM = { nome: '', cnpj: '', email: '', senha: '', confirmarSenha: '' };
@@ -50,11 +51,31 @@ export default function RegisterPage() {
 
   const validar = () => {
     const errs = {};
-    if (!form.nome.trim())  errs.nome  = 'Nome da instituição é obrigatório';
-    if (!form.email.trim()) errs.email = 'E-mail é obrigatório';
-    if (!form.senha)        errs.senha = 'Senha é obrigatória';
-    if (form.senha.length > 0 && form.senha.length < 6) errs.senha = 'A senha deve ter ao menos 6 caracteres';
-    if (form.senha !== form.confirmarSenha) errs.confirmarSenha = 'As senhas não coincidem';
+    errs.nome = validate(form.nome, [
+      (v) => required(v, 'Nome da instituição é obrigatório'),
+      (v) => minLength(3)(v, 'Nome deve ter pelo menos 3 caracteres')
+    ]);
+    errs.cnpj = validate(form.cnpj, [
+      (v) => cnpj(v)
+    ]);
+    errs.email = validate(form.email, [
+      (v) => required(v, 'E-mail é obrigatório'),
+      (v) => email(v)
+    ]);
+    errs.senha = validate(form.senha, [
+      (v) => required(v, 'Senha é obrigatória'),
+      (v) => minLength(6)(v, 'A senha deve ter pelo menos 6 caracteres')
+    ]);
+    errs.confirmarSenha = validate(form.confirmarSenha, [
+      (v) => required(v, 'Confirmação de senha é obrigatória')
+    ]);
+    if (form.senha && form.confirmarSenha && form.senha !== form.confirmarSenha) {
+      errs.confirmarSenha = 'As senhas não coincidem';
+    }
+    // Remove erros nulos
+    Object.keys(errs).forEach(key => {
+      if (!errs[key]) delete errs[key];
+    });
     return errs;
   };
 
@@ -69,9 +90,14 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
     try {
-      await authService.register({ nome: form.nome, cnpj: form.cnpj, email: form.email, senha: form.senha });
+      await authService.register({ 
+        nome: form.nome.trim(), 
+        cnpj: form.cnpj.trim(), 
+        email: form.email.trim(), 
+        senha: form.senha 
+      });
       // Auto-login após cadastro
-      await login(form.email, form.senha);
+      await login(form.email.trim(), form.senha);
       navigate('/');
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.error || 'Erro ao cadastrar. Tente novamente.';

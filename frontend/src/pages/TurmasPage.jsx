@@ -12,6 +12,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { TurnoTag } from '../components/StatusTag';
 import { turmaService } from '../services/turmaService';
 import { educadorService } from '../services/educadorService';
+import { required, minLength, maxLength, minNumber, maxNumber, validate, trim } from '../utils/validators';
 
 const TURNO_OPTIONS = [
   { label: '☀️  Manhã', value: 'MANHA' },
@@ -91,7 +92,22 @@ export default function TurmasPage() {
 
   const validar = () => {
     const errs = {};
-    if (!form.nome.trim()) errs.nome = 'O nome é obrigatório';
+    errs.nome = validate(form.nome, [
+      (v) => required(v, 'O nome é obrigatório'),
+      (v) => minLength(3)(v, 'Nome deve ter pelo menos 3 caracteres'),
+      (v) => maxLength(100)(v, 'Nome deve ter no máximo 100 caracteres')
+    ]);
+    errs.diasSemana = validate(form.diasSemana, [
+      (v) => maxLength(100)(v, 'Dias da semana devem ter no máximo 100 caracteres')
+    ]);
+    errs.capacidadeMaxima = validate(form.capacidadeMaxima, [
+      (v) => minNumber(1)(v, 'Capacidade mínima é 1'),
+      (v) => maxNumber(100)(v, 'Capacidade máxima é 100')
+    ]);
+    // Remove erros nulos
+    Object.keys(errs).forEach(key => {
+      if (!errs[key]) delete errs[key];
+    });
     return errs;
   };
 
@@ -100,11 +116,16 @@ export default function TurmasPage() {
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setSaving(true);
     try {
+      const payload = {
+        ...form,
+        nome: trim(form.nome),
+        diasSemana: trim(form.diasSemana)
+      };
       if (editando) {
-        await turmaService.atualizar(editando.id, form);
+        await turmaService.atualizar(editando.id, payload);
         toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Turma atualizada!', life: 3000 });
       } else {
-        await turmaService.cadastrar(form);
+        await turmaService.cadastrar(payload);
         toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Turma cadastrada!', life: 3000 });
       }
       fecharDialog();
@@ -217,7 +238,7 @@ export default function TurmasPage() {
         <div className="form-grid">
           <div className="field">
             <label htmlFor="turma-nome">Nome *</label>
-            <InputText id="turma-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} className={errors.nome ? 'p-invalid' : ''} autoFocus />
+            <InputText id="turma-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} placeholder="Nome da turma" className={errors.nome ? 'p-invalid' : ''} autoFocus />
             {errors.nome && <small className="p-error">{errors.nome}</small>}
           </div>
           <div className="field">
@@ -226,11 +247,13 @@ export default function TurmasPage() {
           </div>
           <div className="field">
             <label htmlFor="turma-dias">Dias da Semana</label>
-            <InputText id="turma-dias" value={form.diasSemana} onChange={e => onChange('diasSemana', e.target.value)} placeholder="Ex: Segunda, Quarta" />
+            <InputText id="turma-dias" value={form.diasSemana} onChange={e => onChange('diasSemana', e.target.value)} placeholder="Ex: Segunda, Quarta" className={errors.diasSemana ? 'p-invalid' : ''} />
+            {errors.diasSemana && <small className="p-error">{errors.diasSemana}</small>}
           </div>
           <div className="field">
             <label htmlFor="turma-cap">Capacidade Máxima</label>
-            <InputNumber id="turma-cap" value={form.capacidadeMaxima} onValueChange={e => onChange('capacidadeMaxima', e.value)} min={1} max={100} showButtons />
+            <InputNumber id="turma-cap" value={form.capacidadeMaxima} onValueChange={e => onChange('capacidadeMaxima', e.value)} min={1} max={100} showButtons className={errors.capacidadeMaxima ? 'p-invalid' : ''} />
+            {errors.capacidadeMaxima && <small className="p-error">{errors.capacidadeMaxima}</small>}
           </div>
           <div className="field">
             <label htmlFor="turma-educador">Educador</label>

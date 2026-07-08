@@ -12,6 +12,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { NivelTag } from '../components/StatusTag';
 import { alunoService } from '../services/alunoService';
 import { turmaService } from '../services/turmaService';
+import { required, minLength, maxLength, telefone, validate, trim } from '../utils/validators';
 
 const NIVEL_OPTIONS = [
   { label: '⚪ Iniciante', value: 'INICIANTE' },
@@ -83,7 +84,18 @@ export default function AlunosPage() {
 
   const validar = () => {
     const errs = {};
-    if (!form.nome.trim()) errs.nome = 'O nome é obrigatório';
+    errs.nome = validate(form.nome, [
+      (v) => required(v, 'O nome é obrigatório'),
+      (v) => minLength(3)(v, 'Nome deve ter pelo menos 3 caracteres'),
+      (v) => maxLength(100)(v, 'Nome deve ter no máximo 100 caracteres')
+    ]);
+    errs.telefone = validate(form.telefone, [
+      (v) => telefone(v)
+    ]);
+    // Remove erros nulos
+    Object.keys(errs).forEach(key => {
+      if (!errs[key]) delete errs[key];
+    });
     return errs;
   };
 
@@ -94,6 +106,8 @@ export default function AlunosPage() {
     try {
       const payload = {
         ...form,
+        nome: trim(form.nome),
+        telefone: trim(form.telefone),
         dataNascimento: formatDate(form.dataNascimento),
       };
       if (editando) {
@@ -215,7 +229,7 @@ export default function AlunosPage() {
         <div className="form-grid">
           <div className="field">
             <label htmlFor="aluno-nome">Nome *</label>
-            <InputText id="aluno-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} className={errors.nome ? 'p-invalid' : ''} autoFocus />
+            <InputText id="aluno-nome" value={form.nome} onChange={e => onChange('nome', e.target.value)} placeholder="Nome completo do aluno" className={errors.nome ? 'p-invalid' : ''} autoFocus />
             {errors.nome && <small className="p-error">{errors.nome}</small>}
           </div>
           <div className="field">
@@ -224,7 +238,8 @@ export default function AlunosPage() {
           </div>
           <div className="field">
             <label htmlFor="aluno-tel">Telefone</label>
-            <InputText id="aluno-tel" value={form.telefone} onChange={e => onChange('telefone', e.target.value)} placeholder="(11) 99999-9999" />
+            <InputText id="aluno-tel" value={form.telefone} onChange={e => onChange('telefone', e.target.value)} placeholder="(11) 99999-9999" className={errors.telefone ? 'p-invalid' : ''} />
+            {errors.telefone && <small className="p-error">{errors.telefone}</small>}
           </div>
           <div className="field">
             <label htmlFor="aluno-nivel">Nível de Alfabetização</label>
