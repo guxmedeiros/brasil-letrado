@@ -197,8 +197,8 @@ export default function TurmasPage() {
       ) : (
         <DataTable
           value={turmas}
-          paginator rows={8}
-          rowsPerPageOptions={[8, 16, 32]}
+          paginator rows={10}
+          rowsPerPageOptions={[10, 20, 50]}
           globalFilter={globalFilter}
           globalFilterFields={['nome', 'diasSemana', 'educadorNome']}
           emptyMessage="Nenhuma turma encontrada."
